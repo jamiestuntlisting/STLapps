@@ -1,302 +1,271 @@
 /*
- * Builds the home screen from the catalog and wires up the few things that
- * move: the clock, the pages, and Spotlight.
+ * Builds the board from the catalog, filters it as you type, and runs the
+ * settings view.
  *
- * Icons navigate in the same tab on purpose — tapping an app on a phone
- * leaves the home screen, and Back brings you home again. That also keeps
- * every link working inside an installed web app, where a new tab would
- * throw you out to the browser.
+ * Preferences live in localStorage under one key, so the board looks the same
+ * next time on that device. Nothing is sent anywhere — there is no server.
  */
 
-import { DOCK, PAGES, ALL_APPS } from './apps.js';
+import { SECTIONS, ALL_APPS, TINTS } from './apps.js';
 import { glyphSvg } from './icons.js';
 
 const $ = (sel) => document.querySelector(sel);
 
-/* ── Icons ──────────────────────────────────────────────────────── */
+const STORE_KEY = 'stlapps.prefs.v1';
 
-function iconMarkup(app) {
-  const [from, to] = app.tint;
-  return `<span class="app-icon" style="--from:${from};--to:${to}">${glyphSvg(app.glyph)}</span>`;
+const prefs = loadPrefs();
+
+function loadPrefs() {
+  const empty = { username: '', hidden: [] };
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    return {
+      username: typeof saved.username === 'string' ? saved.username : '',
+      hidden: Array.isArray(saved.hidden) ? saved.hidden : [],
+    };
+  } catch {
+    /* Corrupt or unavailable storage shouldn't take the page down. */
+    return empty;
+  }
 }
 
-function appLink(app) {
-  const a = document.createElement('a');
-  a.className = 'app';
-  a.href = app.url;
-  a.innerHTML = `${iconMarkup(app)}<span class="app-name">${app.name}</span>`;
+function savePrefs() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(prefs));
+    flashSaved();
+  } catch {
+    /* Private browsing can refuse writes — the board still works this session. */
+  }
+}
 
-  /* An unconfirmed link says so rather than pretending. */
-  if (app.note) {
-    a.dataset.note = '';
-    a.title = `${app.name} — ${app.blurb}\n⚠ ${app.note}`;
+let savedTimer;
+function flashSaved() {
+  const el = $('#saved');
+  el.textContent = 'Saved';
+  el.dataset.on = 'true';
+  clearTimeout(savedTimer);
+  savedTimer = setTimeout(() => { el.dataset.on = 'false'; }, 1400);
+}
+
+/* ── The one app whose link depends on a preference ─────────────── */
+
+function resolveUrl(app) {
+  if (app.id !== 'profile') return app.url;
+  const user = prefs.username.trim().replace(/^\/+|\/+$/g, '');
+  return user ? `https://www.stuntlisting.com/${encodeURIComponent(user)}` : app.url;
+}
+
+/* The Profile card only carries a warning while it has nowhere better to go. */
+function resolveNote(app) {
+  if (app.id === 'profile' && prefs.username.trim()) return '';
+  return app.note || '';
+}
+
+/* ── Cards ──────────────────────────────────────────────────────── */
+
+function cardFor(app) {
+  const note = resolveNote(app);
+
+  /* Settings is a view, not a destination, so it's a button not a link. */
+  const el = document.createElement(app.action ? 'button' : 'a');
+  el.className = 'card';
+  el.style.setProperty('--tint', TINTS[app.tint] || TINTS.slate);
+
+  if (app.action) {
+    el.type = 'button';
+    el.addEventListener('click', () => showSettings());
   } else {
-    a.title = `${app.name} — ${app.blurb}`;
+    el.href = resolveUrl(app);
   }
-  return a;
+
+  el.innerHTML = `
+    <span class="card-icon">${glyphSvg(app.glyph)}</span>
+    <span class="card-text">
+      <span class="card-name">${app.name}</span>
+      <span class="card-blurb">${app.blurb}</span>
+    </span>
+    ${note ? '<span class="card-flag" aria-hidden="true"></span>' : ''}`;
+
+  if (note) el.title = `${app.name} — ${note}`;
+  return el;
 }
 
-/* ── Home screen ────────────────────────────────────────────────── */
+function renderBoard() {
+  const board = $('#apps');
+  board.innerHTML = '';
 
-function renderHome() {
-  const dock = $('#dock');
-  DOCK.forEach((app) => {
-    const item = appLink(app);
-    item.setAttribute('role', 'listitem');
-    dock.append(item);
-  });
+  SECTIONS.forEach((section) => {
+    const visible = section.apps.filter((app) => !prefs.hidden.includes(app.id));
+    if (!visible.length) return;
 
-  const pages = $('#pages');
-  PAGES.forEach((page) => {
-    const section = document.createElement('section');
-    section.className = 'page';
-    section.dataset.page = page.id;
-    section.setAttribute('aria-label', page.title);
+    const wrap = document.createElement('section');
+    wrap.className = 'section';
+    wrap.dataset.section = section.id;
 
-    const heading = document.createElement('h2');
-    heading.className = 'page-title';
-    heading.textContent = page.title;
-    section.append(heading);
+    wrap.innerHTML = `
+      <div class="section-head">
+        <h2 class="section-label">${section.label}</h2>
+        <p class="section-hint">${section.hint}</p>
+      </div>`;
 
-    page.apps.forEach((app) => section.append(appLink(app)));
-    pages.append(section);
-  });
-
-  renderDots(PAGES.length);
-}
-
-function renderDots(count) {
-  const dots = $('#dots');
-  for (let i = 0; i < count; i += 1) {
-    const dot = document.createElement('button');
-    dot.type = 'button';
-    dot.className = 'dot';
-    dot.setAttribute('aria-label', `Page ${i + 1}: ${PAGES[i].title}`);
-    dot.setAttribute('aria-current', String(i === 0));
-    dot.addEventListener('click', () => goToPage(i));
-    dots.append(dot);
-  }
-}
-
-/* ── Paging ─────────────────────────────────────────────────────── */
-
-const pagesEl = () => $('#pages');
-
-function currentPage() {
-  const el = pagesEl();
-  return el.clientWidth ? Math.round(el.scrollLeft / el.clientWidth) : 0;
-}
-
-function goToPage(index) {
-  const el = pagesEl();
-  el.scrollTo({ left: index * el.clientWidth, behavior: 'smooth' });
-}
-
-function syncDots() {
-  const active = currentPage();
-  document.querySelectorAll('.dot').forEach((dot, i) => {
-    dot.setAttribute('aria-current', String(i === active));
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+    visible.forEach((app) => grid.append(cardFor(app)));
+    wrap.append(grid);
+    board.append(wrap);
   });
 }
 
-function wirePaging() {
-  const el = pagesEl();
+/* ── Search ─────────────────────────────────────────────────────── */
 
-  /* rAF-throttled: scroll fires far more often than the dots need redrawing. */
-  let queued = false;
-  el.addEventListener('scroll', () => {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(() => {
-      queued = false;
-      syncDots();
+function applyFilter(query) {
+  const q = query.trim().toLowerCase();
+  const words = q ? q.split(/\s+/) : [];
+  let shown = 0;
+
+  document.querySelectorAll('.section').forEach((section) => {
+    let inSection = 0;
+
+    section.querySelectorAll('.card').forEach((card) => {
+      const haystack = card.textContent.toLowerCase();
+      const hit = words.every((w) => haystack.includes(w));
+      card.hidden = !hit;
+      if (hit) inSection += 1;
     });
-  }, { passive: true });
 
-  el.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowRight') {
+    /* A section with nothing left in it goes too, heading and all. */
+    section.hidden = inSection === 0;
+    shown += inSection;
+  });
+
+  $('#empty').hidden = shown > 0;
+}
+
+function wireSearch() {
+  const input = $('#search');
+  input.addEventListener('input', () => applyFilter(input.value));
+
+  document.addEventListener('keydown', (event) => {
+    const typing = event.target.closest('input, textarea, select');
+
+    /* "/" and ⌘K both jump to the field, the way a good tool does. */
+    if ((event.key === '/' && !typing) ||
+        ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k')) {
       event.preventDefault();
-      goToPage(Math.min(currentPage() + 1, PAGES.length - 1));
-    } else if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      goToPage(Math.max(currentPage() - 1, 0));
+      showBoard();
+      input.focus();
+      input.select();
+      return;
+    }
+
+    if (event.key === 'Escape' && event.target === input) {
+      input.value = '';
+      applyFilter('');
+      input.blur();
     }
   });
 }
 
-/* ── Clock ──────────────────────────────────────────────────────── */
+/* ── Settings ───────────────────────────────────────────────────── */
 
-function startClock() {
-  const clock = $('#clock');
-
-  const tick = () => {
-    /* Hour and minute only, in the reader's own locale and 12/24h setting. */
-    clock.textContent = new Date().toLocaleTimeString([], {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  };
-
-  tick();
-  /* Line up with the top of the next minute, then run once a minute. */
-  setTimeout(() => {
-    tick();
-    setInterval(tick, 60_000);
-  }, (60 - new Date().getSeconds()) * 1000);
+function showSettings() {
+  $('#apps').hidden = true;
+  $('#empty').hidden = true;
+  $('#settings').hidden = false;
+  window.scrollTo({ top: 0 });
+  $('#settings-back').focus();
+  history.replaceState(null, '', '#settings');
 }
 
-/* ── Spotlight ──────────────────────────────────────────────────── */
-
-const spotlight = {
-  root: null,
-  input: null,
-  list: null,
-  active: -1,
-  matches: [],
-};
-
-function searchApps(query) {
-  const q = query.trim().toLowerCase();
-  if (!q) return [];
-
-  /* Every word has to appear somewhere in the app — so "high fall" finds
-     Pro High Faller, and "stunt news" doesn't drag in everything stunt. */
-  const words = q.split(/\s+/);
-
-  return ALL_APPS
-    .map((app) => {
-      const haystack = `${app.name} ${app.blurb} ${app.page} ${app.id}`.toLowerCase();
-      if (!words.every((w) => haystack.includes(w))) return null;
-
-      /* Rank: name beats blurb, and a name that starts with the query wins. */
-      const name = app.name.toLowerCase();
-      let score = 0;
-      if (name.startsWith(q)) score += 100;
-      if (name.includes(q)) score += 50;
-      if (app.blurb.toLowerCase().includes(q)) score += 10;
-      return { app, score };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.score - a.score || a.app.name.localeCompare(b.app.name))
-    .map((hit) => hit.app);
+function showBoard() {
+  $('#settings').hidden = true;
+  $('#apps').hidden = false;
+  applyFilter($('#search').value);
+  history.replaceState(null, '', location.pathname + location.search);
 }
 
-function renderResults(query) {
-  const { list } = spotlight;
-  spotlight.matches = searchApps(query);
-  spotlight.active = spotlight.matches.length ? 0 : -1;
+function renderToggles() {
+  const list = $('#toggles');
   list.innerHTML = '';
 
-  if (!query.trim()) return;
-
-  if (!spotlight.matches.length) {
-    const empty = document.createElement('li');
-    empty.className = 'spotlight-empty';
-    empty.textContent = `No app matches “${query.trim()}”.`;
-    list.append(empty);
-    return;
-  }
-
-  spotlight.matches.forEach((app, i) => {
+  ALL_APPS.filter((app) => !app.action).forEach((app) => {
     const li = document.createElement('li');
-    const link = document.createElement('a');
-    link.className = 'result';
-    link.href = app.url;
-    link.dataset.active = String(i === 0);
-    link.setAttribute('role', 'option');
-    link.innerHTML = `
-      ${iconMarkup(app)}
-      <span class="result-text">
-        <span class="result-name">${app.name}</span>
-        <span class="result-blurb">${app.blurb}</span>
-      </span>
-      <span class="result-page">${app.page}</span>`;
-    link.addEventListener('mouseenter', () => setActiveResult(i));
-    li.append(link);
+    const label = document.createElement('label');
+    label.className = 'toggle';
+
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = !prefs.hidden.includes(app.id);
+    box.addEventListener('change', () => {
+      prefs.hidden = box.checked
+        ? prefs.hidden.filter((id) => id !== app.id)
+        : [...new Set([...prefs.hidden, app.id])];
+      savePrefs();
+      renderBoard();
+    });
+
+    const name = document.createElement('span');
+    name.textContent = app.name;
+
+    label.append(box, name);
+    li.append(label);
     list.append(li);
   });
 }
 
-function setActiveResult(index) {
-  const links = spotlight.list.querySelectorAll('.result');
-  if (!links.length) return;
-
-  spotlight.active = (index + links.length) % links.length;
-  links.forEach((link, i) => {
-    link.dataset.active = String(i === spotlight.active);
-  });
-  links[spotlight.active].scrollIntoView({ block: 'nearest' });
+function updateUsernamePreview() {
+  const user = prefs.username.trim().replace(/^\/+|\/+$/g, '');
+  $('#username-preview').textContent = user
+    ? `Profile → stuntlisting.com/${user}`
+    : 'Profile → your performer dashboard';
 }
 
-function openSpotlight(seed = '') {
-  spotlight.root.hidden = false;
-  spotlight.input.value = seed;
-  renderResults(seed);
-  spotlight.input.focus();
+function wireSettings() {
+  $('#settings-back').addEventListener('click', showBoard);
+
+  const username = $('#username');
+  username.value = prefs.username;
+
+  username.addEventListener('input', () => {
+    prefs.username = username.value;
+    updateUsernamePreview();
+    savePrefs();
+    renderBoard();
+  });
+
+  $('#reset').addEventListener('click', () => {
+    prefs.username = '';
+    prefs.hidden = [];
+    username.value = '';
+    updateUsernamePreview();
+    savePrefs();
+    renderToggles();
+    renderBoard();
+  });
+
+  renderToggles();
+  updateUsernamePreview();
+
+  if (location.hash === '#settings') showSettings();
 }
 
-function closeSpotlight() {
-  spotlight.root.hidden = true;
-  spotlight.input.value = '';
-  spotlight.list.innerHTML = '';
-  spotlight.matches = [];
-}
+/* ── Timecode ───────────────────────────────────────────────────── */
 
-function wireSpotlight() {
-  spotlight.root = $('#spotlight');
-  spotlight.input = $('#search-input');
-  spotlight.list = $('#search-results');
-
-  $('#search-open').addEventListener('click', () => openSpotlight());
-  $('#search-close').addEventListener('click', closeSpotlight);
-
-  /* Tapping the dimmed area behind the sheet closes it. */
-  spotlight.root.addEventListener('click', (event) => {
-    if (event.target === spotlight.root) closeSpotlight();
-  });
-
-  spotlight.input.addEventListener('input', (event) => {
-    renderResults(event.target.value);
-  });
-
-  spotlight.input.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      setActiveResult(spotlight.active + 1);
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      setActiveResult(spotlight.active - 1);
-    } else if (event.key === 'Enter') {
-      const target = spotlight.matches[spotlight.active];
-      if (target) window.location.href = target.url;
-    } else if (event.key === 'Escape') {
-      closeSpotlight();
-    }
-  });
-
-  /* ⌘K / Ctrl-K from anywhere, and — like a real home screen — just start
-     typing. We stay out of the way of modifier combos and actual fields. */
-  document.addEventListener('keydown', (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-      event.preventDefault();
-      openSpotlight();
-      return;
-    }
-
-    if (!spotlight.root.hidden) return;
-    if (event.metaKey || event.ctrlKey || event.altKey) return;
-    if (event.target.closest('input, textarea, select')) return;
-
-    if (/^[a-z0-9]$/i.test(event.key)) {
-      event.preventDefault();
-      openSpotlight(event.key);
-    }
-  });
+function startStamp() {
+  const stamp = $('#stamp');
+  const tick = () => {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    stamp.textContent =
+      `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  };
+  tick();
+  setInterval(tick, 1000);
 }
 
 /* ── Go ─────────────────────────────────────────────────────────── */
 
-renderHome();
-wirePaging();
-wireSpotlight();
-startClock();
+renderBoard();
+wireSearch();
+wireSettings();
+startStamp();

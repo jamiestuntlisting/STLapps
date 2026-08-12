@@ -1,576 +1,519 @@
 /*
- * StuntListing Apps — an iPhone home screen for everything we've built.
+ * StuntListing Apps.
  *
- * Two layouts out of one set of rules:
- *   phone   — four across, six down, pages that swipe sideways, dock at the foot
- *   desktop — the pages open out into one wide board, more icons per row
- * The switch happens at 900px; everything above that is the same furniture
- * given more room, not a different design.
+ * The look is borrowed from the paperwork and hardware around a set: matte
+ * black, hairline rules, and monospaced labels of the kind that run down a
+ * call sheet. Colour is rationed — it appears only inside the small icon
+ * tiles, never on a card, so twenty-two apps read as one calm board rather
+ * than a patchwork of coloured squares.
+ *
+ * Committed to a single dark palette on purpose: this gets opened on set,
+ * often at night. Every colour is painted explicitly so the page holds up
+ * whatever ground it's dropped onto.
  */
 
 :root {
-  /* Icon geometry. Everything else is measured off --icon, so changing it
-     rescales the grid, the labels and the dock together. */
-  --icon: 60px;
-  --icon-radius: 22.5%;      /* close enough to the iOS squircle */
-  --grid-cols: 4;
-  --col-gap: 22px;
-  --row-gap: 20px;
+  /* Ground and surfaces — near-black with a faint blue cast, not pure grey. */
+  --ink:        #0a0b0d;
+  --panel:      #131519;
+  --panel-lift: #181b21;
+  --line:       #23262d;
+  --line-soft:  #1a1d23;
 
-  --accent: #ff5a36;         /* StuntListing orange */
-  --label: rgba(255, 255, 255, .95);
-  --ground: #0b0d12;
+  /* Text — warm off-white against the cool ground, the way paper reads. */
+  --text:   #e8e6e3;
+  --muted:  #8a8f99;
+  --faint:  #5d636e;
 
-  --dock-bg: rgba(255, 255, 255, .13);
-  --dock-line: rgba(255, 255, 255, .18);
+  --accent: #ff5a36;
 
-  --ease: cubic-bezier(.32, .72, 0, 1);
+  --radius: 14px;
+  --tap: 44px;                       /* minimum comfortable target */
+
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+          "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+
+  --ease: cubic-bezier(.2, .7, .2, 1);
 }
 
 * { box-sizing: border-box; }
 
-html, body {
-  height: 100%;
-  margin: 0;
-}
+/* Load-bearing. The cards, the board and the sections all set `display`, and
+   a class selector outranks the browser's own [hidden] rule — without this,
+   hiding anything silently does nothing and Settings renders on top of the
+   board. */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
 
 body {
-  /* Column: status bar on top, the home screen taking whatever is left.
-     Sizing it this way is what keeps the dock on screen rather than pushed
-     off the bottom edge. */
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-
-  background: var(--ground);
-  color: var(--label);
-  font: 400 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--ink);
+  color: var(--text);
+  font: 400 16px/1.5 var(--sans);
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;                 /* a home screen doesn't scroll vertically */
-  overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
+
+  /* One soft light from the top left, so the board isn't a flat black field. */
+  background-image:
+    radial-gradient(70rem 40rem at 8% -10%, rgba(255, 90, 54, .10), transparent 60%),
+    radial-gradient(60rem 40rem at 100% 0%, rgba(76, 141, 246, .07), transparent 55%);
+  background-repeat: no-repeat;
 }
 
-/* ── Wallpaper ──────────────────────────────────────────────────── */
-
-.wallpaper {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(120% 90% at 50% 0%,   #1a1f2e 0%, #0b0d12 60%),
-    var(--ground);
-}
-
-.glow {
+.skip {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: .5;
+  left: -9999px;
 }
 
-.glow-warm {
-  width: 62vmin; height: 62vmin;
-  top: -14vmin; left: -10vmin;
-  background: radial-gradient(circle, var(--accent), transparent 68%);
+.skip:focus {
+  left: 12px; top: 12px;
+  z-index: 10;
+  padding: 8px 14px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
 }
 
-.glow-cool {
-  width: 70vmin; height: 70vmin;
-  bottom: -22vmin; right: -14vmin;
-  background: radial-gradient(circle, #4b6bff, transparent 68%);
-  opacity: .38;
+/* ── Top rail ───────────────────────────────────────────────────── */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--ink) 86%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-soft);
 }
 
-/* ── Status bar ─────────────────────────────────────────────────── */
+.rail {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 14px clamp(16px, 4vw, 32px);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 
-.statusbar {
-  position: relative;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
   flex: none;
+}
+
+.brand-mark {
+  width: 26px; height: 26px;
+  color: var(--accent);
+  flex: none;
+}
+
+.brand-text {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+
+.brand-text b {
+  font-size: 15.5px;
+  font-weight: 620;
+  letter-spacing: -.01em;
+}
+
+/* The word "Apps" set as a label, the way a form field is titled. */
+.brand-text span {
+  font: 500 10.5px/1 var(--mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.search {
+  margin-left: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: max(12px, env(safe-area-inset-top)) 30px 4px;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: .2px;
-  font-variant-numeric: tabular-nums;
+  gap: 8px;
+  flex: 1 1 320px;
+  max-width: 340px;
+  padding: 0 10px;
+  height: 38px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  transition: border-color .18s var(--ease);
 }
 
-.statusbar-icons {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  fill: currentColor;
-}
+.search:focus-within { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.search > svg { width: 15px; height: 15px; color: var(--faint); flex: none; }
 
-.sb-signal  { width: 18px; }
-.sb-wifi    { width: 16px; }
-.sb-battery { width: 25px; }
-
-/* Installed to a home screen the real status bar is already there — ours
-   would be a second clock sitting under it. */
-@media (display-mode: standalone) {
-  .statusbar { visibility: hidden; }
-}
-
-/* ── Home screen frame ──────────────────────────────────────────── */
-
-.home {
+#search {
   flex: 1;
-  min-height: 0;          /* lets the pages shrink instead of forcing overflow */
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── Pages ──────────────────────────────────────────────────────── */
-
-.pages {
-  flex: 1;
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+  min-width: 0;
+  font: 400 14.5px/1 var(--sans);
+  color: var(--text);
+  background: none;
+  border: 0;
   outline: none;
 }
 
-.pages::-webkit-scrollbar { display: none; }
+#search::placeholder { color: var(--faint); }
+#search::-webkit-search-cancel-button { display: none; }
 
-.page {
-  flex: 0 0 100%;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), 1fr);
-  align-content: start;
-  gap: var(--row-gap) var(--col-gap);
-  padding: 18px max(22px, env(safe-area-inset-left)) 8px max(22px, env(safe-area-inset-right));
+.search kbd {
+  flex: none;
+  font: 500 11px/1 var(--mono);
+  color: var(--faint);
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
 }
 
-/* The page's name. On a phone the dots do this job, so it's hidden there. */
-.page-title {
-  display: none;
-  grid-column: 1 / -1;
-  margin: 0 0 2px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .5);
+/* ── Board ──────────────────────────────────────────────────────── */
+
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px) 64px;
 }
 
-/* ── An app icon ────────────────────────────────────────────────── */
-
-.app {
+.board {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  text-decoration: none;
-  color: inherit;
-  min-width: 0;
-  transition: transform .22s var(--ease);
+  gap: clamp(28px, 4vw, 40px);
 }
 
-.app-icon {
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+/* Monospaced, letter-spaced, with a rule running out to the edge — the way
+   a section is titled on a call sheet. */
+.section-label {
+  margin: 0;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex: none;
+}
+
+.section-hint {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--faint);
+  flex: none;
+}
+
+.section-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line-soft);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 10px;
+}
+
+/* ── A card ─────────────────────────────────────────────────────── */
+
+.card {
+  --tint: var(--muted);
   position: relative;
-  width: var(--icon);
-  height: var(--icon);
-  border-radius: var(--icon-radius);
-  background: linear-gradient(165deg, var(--from), var(--to));
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 14px;
+  min-height: var(--tap);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color .18s var(--ease),
+    background .18s var(--ease),
+    transform .18s var(--ease);
+}
+
+.card:hover,
+.card:focus-visible {
+  background: var(--panel-lift);
+  border-color: color-mix(in srgb, var(--tint) 45%, var(--line));
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.card:focus-visible {
+  box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px color-mix(in srgb, var(--tint) 70%, transparent);
+}
+
+.card:active { transform: translateY(0); }
+
+/* Matte tinted tile — no gloss, no gradient. The colour of the app.
+   Sized so the drawing inside is actually legible: the whole point of these
+   icons is telling one app from another at a glance. */
+.card-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
-  color: #fff;
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, .28),
-    0 8px 18px rgba(0, 0, 0, .34);
-  overflow: hidden;
+  border-radius: 11px;
+  color: var(--tint);
+  background: color-mix(in srgb, var(--tint) 17%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tint) 38%, transparent);
+  transition: background .18s var(--ease), box-shadow .18s var(--ease);
 }
 
-/* The sheen across the top third — what makes a flat square read as an icon. */
-.app-icon::after {
-  content: "";
+.card:hover .card-icon,
+.card:focus-visible .card-icon {
+  background: color-mix(in srgb, var(--tint) 26%, transparent);
+  box-shadow: 0 0 18px -4px color-mix(in srgb, var(--tint) 55%, transparent);
+}
+
+.glyph { width: 25px; height: 25px; }
+
+.card-text { min-width: 0; }
+
+.card-name {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 560;
+  letter-spacing: -.005em;
+  text-wrap: balance;
+}
+
+.card-blurb {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* An unconfirmed link is marked rather than quietly hoped for. */
+.card-flag {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg,
-    rgba(255, 255, 255, .26) 0%,
-    rgba(255, 255, 255, .06) 42%,
-    rgba(0, 0, 0, .08) 100%);
-  pointer-events: none;
+  top: 10px;
+  right: 11px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f2a33c;
 }
 
-/* A hairline inside the edge, so icons stay crisp on a light wallpaper. */
-.app-icon::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .28);
-  pointer-events: none;
-  z-index: 1;
-}
+/* ── Empty state ────────────────────────────────────────────────── */
 
-.glyph {
-  width: 56%;
-  height: 56%;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .22));
-}
-
-/* Two lines, then clip. A long name wraps rather than being cut mid-word,
-   and the grid row grows to fit so icons stay level across the row. */
-.app-name {
-  max-width: 100%;
-  font-size: 11.5px;
-  line-height: 1.25;
+.empty {
+  margin: 40px 0;
   text-align: center;
-  letter-spacing: .1px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: var(--muted);
+  font-size: 14.5px;
+}
+
+.empty a { color: var(--accent); }
+
+/* ── Settings ───────────────────────────────────────────────────── */
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 640px;
+}
+
+.settings[hidden] { display: none; }
+
+.settings-head { display: flex; flex-direction: column; gap: 14px; }
+
+.settings-head h1 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 620;
+  letter-spacing: -.02em;
+}
+
+.back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px 7px 8px;
+  font: 500 13px/1 var(--sans);
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: color .18s var(--ease), border-color .18s var(--ease);
+}
+
+.back:hover { color: var(--text); border-color: var(--muted); }
+.back svg { width: 15px; height: 15px; }
+
+.field { display: flex; flex-direction: column; gap: 7px; }
+
+.field > label,
+.field-label {
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--faint);
+  max-width: 58ch;
+}
+
+.field-hint code {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field-hint em { font-style: italic; color: var(--accent); }
+
+#username {
+  margin-top: 3px;
+  padding: 0 12px;
+  height: 42px;
+  font: 400 14.5px/1 var(--sans);
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .18s var(--ease);
+}
+
+#username:focus { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+
+.field-note {
+  margin: 0;
+  min-height: 1.3em;
+  font: 400 12.5px/1.3 var(--mono);
+  color: var(--faint);
   overflow-wrap: anywhere;
 }
 
-/* Press-down, the way an icon dips before it opens. */
-.app:active { transform: scale(.88); }
-
-.app:focus-visible {
-  outline: none;
-}
-
-.app:focus-visible .app-icon {
-  box-shadow:
-    0 0 0 3px var(--ground),
-    0 0 0 5.5px var(--accent);
-}
-
-/* A link we haven't been able to confirm gets a small dot, and says why
-   on hover. Better a visible question mark than a dead icon. */
-.app[data-note] .app-icon::after {
-  background:
-    radial-gradient(circle at calc(100% - 9px) 9px, #ffd166 0 3.2px, transparent 3.6px),
-    linear-gradient(180deg,
-      rgba(255, 255, 255, .26) 0%,
-      rgba(255, 255, 255, .06) 42%,
-      rgba(0, 0, 0, .08) 100%);
-}
-
-/* ── Page dots ──────────────────────────────────────────────────── */
-
-.dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  height: 22px;
-  flex: none;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .32);
-  cursor: pointer;
-  transition: background .25s var(--ease), transform .25s var(--ease);
-}
-
-.dot[aria-current="true"] {
-  background: #fff;
-  transform: scale(1.1);
-}
-
-/* ── Search pill and dock ───────────────────────────────────────── */
-
-.tray {
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 6px max(16px, env(safe-area-inset-left))
-           max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-right));
-}
-
-.search-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px 6px 11px;
-  font: inherit;
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, .92);
-  background: rgba(255, 255, 255, .17);
-  border: .5px solid rgba(255, 255, 255, .16);
-  border-radius: 999px;
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  cursor: pointer;
-  transition: background .2s var(--ease), transform .2s var(--ease);
-}
-
-.search-pill svg { width: 14px; height: 14px; }
-.search-pill:hover { background: rgba(255, 255, 255, .24); }
-.search-pill:active { transform: scale(.95); }
-
-.dock {
-  display: grid;
-  grid-template-columns: repeat(4, var(--icon));
-  gap: var(--col-gap);
-  padding: 12px 14px;
-  background: var(--dock-bg);
-  border: .5px solid var(--dock-line);
-  border-radius: 34px;
-  backdrop-filter: blur(26px) saturate(170%);
-  -webkit-backdrop-filter: blur(26px) saturate(170%);
-}
-
-/* Dock icons wear no label, same as iOS. */
-.dock .app-name {
-  position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* ── Spotlight ──────────────────────────────────────────────────── */
-
-.spotlight {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  justify-content: center;
-  padding: max(56px, env(safe-area-inset-top)) 16px 16px;
-  background: rgba(10, 12, 18, .62);
-  backdrop-filter: blur(24px) saturate(150%);
-  -webkit-backdrop-filter: blur(24px) saturate(150%);
-  animation: sheet-in .2s var(--ease);
-}
-
-.spotlight[hidden] { display: none; }
-
-@keyframes sheet-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.spotlight-sheet {
-  width: min(560px, 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: 0;
-}
-
-.spotlight-field {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, .16);
-  border: .5px solid rgba(255, 255, 255, .16);
-  border-radius: 14px;
-}
-
-.spotlight-field > svg {
-  width: 17px; height: 17px;
-  flex: none;
-  color: rgba(255, 255, 255, .65);
-}
-
-#search-input {
-  flex: 1;
-  min-width: 0;
-  font: inherit;
-  font-size: 17px;
-  color: #fff;
-  background: none;
-  border: 0;
-  outline: none;
-}
-
-#search-input::placeholder { color: rgba(255, 255, 255, .5); }
-#search-input::-webkit-search-cancel-button { display: none; }
-
-.spotlight-close {
-  font: inherit;
-  font-size: 15px;
-  color: var(--accent);
-  background: none;
-  border: 0;
-  padding: 0 2px;
-  cursor: pointer;
-}
-
-.spotlight-results {
+.toggles {
   list-style: none;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, .08);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 2px 18px;
 }
 
-.spotlight-results:empty { display: none; }
-
-.result {
+.toggle {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 9px 12px;
-  text-decoration: none;
-  color: inherit;
-  border-bottom: .5px solid rgba(255, 255, 255, .07);
-}
-
-.result:last-child { border-bottom: 0; }
-.result:hover,
-.result:focus-visible,
-.result[data-active="true"] {
-  background: rgba(255, 255, 255, .12);
-  outline: none;
-}
-
-.result .app-icon {
-  --icon: 38px;
-  width: 38px;
-  height: 38px;
-  flex: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
-}
-
-.result-text { min-width: 0; }
-
-.result-name {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.result-blurb {
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, .55);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.result-page {
-  margin-left: auto;
-  flex: none;
-  font-size: 11px;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .38);
-}
-
-.spotlight-empty {
-  padding: 22px 14px;
-  text-align: center;
-  color: rgba(255, 255, 255, .5);
+  gap: 10px;
+  padding: 9px 2px;
+  min-height: var(--tap);
+  border-bottom: 1px solid var(--line-soft);
+  cursor: pointer;
   font-size: 14px;
 }
 
-.noscript {
-  padding: 28px;
-  text-align: center;
+.toggle input {
+  accent-color: var(--accent);
+  width: 17px;
+  height: 17px;
+  flex: none;
+  cursor: pointer;
 }
 
-.noscript a { color: var(--accent); }
+.toggle span { color: var(--muted); transition: color .15s var(--ease); }
+.toggle input:checked + span { color: var(--text); }
 
-/* ── Bigger phones ──────────────────────────────────────────────── */
-
-@media (min-width: 400px) {
-  :root { --icon: 64px; --col-gap: 26px; --row-gap: 24px; }
+.settings-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-@media (min-width: 560px) and (max-width: 899px) {
-  :root { --grid-cols: 6; --icon: 68px; }
+.reset {
+  padding: 9px 14px;
+  font: 500 13px/1 var(--sans);
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: color .18s var(--ease), border-color .18s var(--ease);
 }
 
-/* ── Desktop: the pages open out ────────────────────────────────── */
+.reset:hover { color: var(--accent); border-color: var(--accent); }
 
-@media (min-width: 900px) {
-  :root {
-    --grid-cols: 8;
-    --icon: 68px;
-    --col-gap: 30px;
-    --row-gap: 32px;
-  }
-
-  body {
-    height: auto;
-    min-height: 100dvh;
-    overflow: hidden auto;
-  }
-
-  .home {
-    width: 100%;
-    max-width: 1180px;
-    margin: 0 auto;
-    padding-inline: 20px;
-  }
-
-  /* No more swiping — every page is on the board at once, stacked. */
-  .pages {
-    flex: 0 0 auto;         /* sized by its icons, not stretched to the window */
-    display: block;
-    overflow: visible;
-    scroll-snap-type: none;
-    padding-block: 10px 26px;
-  }
-
-  .page {
-    padding-inline: 0;
-    padding-block: 0 40px;
-  }
-
-  .page-title { display: block; }
-
-  .dots { display: none; }
-
-  /* The dock stops being furniture at the bottom of a screen and becomes a
-     floating bar, so it stays reachable however far the board runs. It gets
-     no backing plate of its own — the frosted dock is the only thing that
-     should show, or a pale rectangle appears over the wallpaper. */
-  .tray {
-    position: sticky;
-    bottom: 0;
-    margin-top: auto;       /* holds the dock at the foot of a short board */
-    padding-block: 10px 22px;
-  }
-
-  .app-name { font-size: 12.5px; }
+.saved {
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  opacity: 0;
+  transition: opacity .2s var(--ease);
 }
 
-@media (min-width: 1200px) {
-  :root { --grid-cols: 9; }
+.saved[data-on="true"] { opacity: 1; }
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+
+.footer {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px clamp(16px, 4vw, 32px) 40px;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font: 400 11.5px/1.5 var(--mono);
+  color: var(--faint);
 }
 
-/* ── Preferences ────────────────────────────────────────────────── */
+/* Running timecode — the one flourish, and it belongs to this world. */
+.stamp { font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+
+.footer code { font-size: 11px; color: var(--muted); }
+
+/* ── Narrow screens ─────────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .rail { flex-wrap: wrap; gap: 12px; }
+  .search { margin-left: 0; flex-basis: 100%; max-width: none; }
+  .search kbd { display: none; }
+  .grid { grid-template-columns: 1fr; }
+  .brand-text b { font-size: 15px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
   }
-  .app:active { transform: none; }
+  .card:hover, .card:focus-visible { transform: none; }
 }
 
-/* Backdrop-filter is the one effect with no graceful degradation — without
-   it the dock reads as a pale rectangle. Fall back to something solid. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .dock,
-  .search-pill { background: rgba(30, 34, 46, .92); }
-  .spotlight   { background: rgba(10, 12, 18, .97); }
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .topbar { background: #0a0b0d; }
+  .card-icon { background: #1c1f26; border-color: #2b2f38; }
 }

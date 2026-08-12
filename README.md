@@ -1,127 +1,135 @@
 # StuntListing Apps
 
-An iPhone home screen for everything we've built. Open it on a phone and it
-looks like a home screen — four icons across, pages that swipe, a dock along
-the bottom. Open it on a desktop and the pages open out into one wide board.
+One launcher for everything we've built. Twenty-two apps on a single board,
+sorted into what you'd actually be doing — your account, the working day,
+training, the arcade — each one saying in a line what it is.
 
-Add it to a phone's home screen and it launches full-screen with no browser
-chrome, so the launcher itself behaves like an app.
+Search from the top rail or press `/`. Settings hides the apps you never open
+and points the Profile card at your own page.
 
 **Live:** _not deployed yet — see [Deploying](#deploying)._
 
 ## What's on it
 
-**Dock** (on every page) — StuntListing · Contracts · Rate Calc · Action Vault
-
-**Stunt Work** — Performer Dashboard · Coordinator Dashboard · Exhibit G ·
-Call Sheet · Breakdown · Coord Please · Hair Selfie · Flashcards · Stunt News ·
-Gym Map · Stunt School · Atlas Action · Stunt Scores · Canada X · Jerk Vest · Shop
-
-**Arcade** — STLG Arcade · Hot to Mark · High Faller · Stair Faller · Fire Burner
+| Section | Apps |
+| --- | --- |
+| **You** | Performer Dashboard · Profile · Search · Lists |
+| **On Set** | Rate Calculator · Contract Toolkit · Selfwrap · The Stunt Breakdown · Hair Selfie · Stunt Flashcards |
+| **Learn** | Action Vault · Atlas Action · Gym Map · Stunt School |
+| **Play** | STLG Arcade · Pro High Faller · Pro Stair Faller · Pro Fire Burner |
+| **More** | Stunt News · X Stunts · Store · Settings |
 
 ## Changing what's on it
 
 Everything lives in [`public/js/apps.js`](public/js/apps.js) — one file, one
-list. Add an entry and an icon appears; the grid, the page dots and the search
-all rebuild themselves from it. Nothing else needs touching.
+list. Add an entry and a card appears; the board, the search and the settings
+toggles all rebuild from it.
 
 ```js
 {
   id: 'my-app',
-  name: 'My App',                       // label — two lines, then it clips
+  name: 'My App',
+  blurb: 'One line saying what it actually is.',
   url: 'https://example.com',
-  glyph: 'camera',                      // any name from public/js/icons.js
-  tint: ['#ff7a45', '#e8331d'],         // the icon gradient, light → dark
-  blurb: 'One line, shown in search.',
+  glyph: 'camera',          // any name from public/js/icons.js
+  tint: 'teal',             // one of the eight in TINTS
 }
 ```
 
-Drawings live in [`public/js/icons.js`](public/js/icons.js). To add one, draw
-it in a 24×24 box, keep the stroke weight at 1.7 to match the rest, and name it
-in the `glyph` field.
+Move an app between sections by moving its entry between the `SECTIONS`
+arrays. Colour comes from the short `TINTS` palette at the top of the file —
+it only ever appears inside the small icon tile, never on the card, which is
+what stops a wall of apps turning into a patchwork.
 
-To move an app between pages, move its entry between the `PAGES` arrays. To pin
-one to the dock, move it into `DOCK` — dock apps sit on every page and aren't
-repeated in the grid, so four is the practical limit.
+Drawings live in [`public/js/icons.js`](public/js/icons.js). Two rules when
+adding one: draw it in a 24×24 box at stroke weight 1.7, and make sure it
+can't be mistaken for another icon at 25px — that's why Search is a magnifier
+with a person inside it, and the two falling games are drawn from different
+angles.
 
 ## Links worth confirming
 
-Two icons point at URLs that couldn't be verified from here — this session's
-network blocks `*.vercel.app`, `*.workers.dev` and `github.io`, so every link
-below came from the Vercel and GitHub APIs rather than from loading the page.
-Both are marked in the app with a small amber dot, and say why on hover.
+This session's network blocked `*.vercel.app`, `*.workers.dev`, `github.io`
+and `stuntlisting.com`, so no link below was opened — they came from the
+Vercel and GitHub APIs, from each repo's own README, and from URL patterns
+found in the Stunt Flashcards and Hair Selfie source. Two are flagged in the
+app with an amber dot:
 
-| App | URL | Why it's flagged |
+| App | URL | Why |
 | --- | --- | --- |
-| **Rate Calc** | `rate-calculator-v3.vercel.app` | The repo is mid-migration from Vercel to Cloudflare Workers. Its last three production deploys on Vercel failed, and the Vercel project no longer carries that clean alias — the URL is the one the repo itself advertises. If it now lives on a Worker, point it there. |
-| **Hair Selfie** | `hairselfie.jamie-181.workers.dev` | Deduced from the Worker name in `wrangler.jsonc` plus the subdomain Stunt Flashcards uses. The worker name is certain; the subdomain is not. |
+| **Rate Calculator** | `rate-calculator-v3.vercel.app` | The repo is mid-migration from Vercel to Cloudflare Workers. Its last three Vercel production deploys failed and the project no longer carries that clean alias — this is the URL the repo itself advertises. If it's on a Worker now, point it there. |
+| **Profile** | `stuntlisting.com/performer_dashboard` | Profiles live at `stuntlisting.com/<username>`, so there's no single URL that works for everyone. Set a username in Settings and the card points straight at your page; until then it falls back to the dashboard. |
 
-Everything else is a canonical domain read straight from the Vercel API, the
-repo's own README, or the site itself. A few are not the obvious guess —
-Action Vault is `action-vault-blond`, Gym Map is `gymmap-iota`, and the
-Breakdown points at `stuntbreakdown3` — so they're worth a glance too.
-
-## What was left off, and why
-
-The screen is public-facing, so it only carries apps a performer or coordinator
-could open. Left off deliberately:
-
-- **Internal and demo builds** — performer dashboard mock-up, profile-update
-  demo, STLG profile review, devtracker, coordinator-software, the older
-  stunt-breakdown versions.
-- **Training Sesh** — its README calls it a private personal tool with no
-  external branding.
-- **Skill Reel Viewer** — a login-gated Express app that appears to deploy on
-  Railway; no public URL to point at.
-- **What's Going On** — still the unmodified Next.js starter.
-- **Non-stunt projects** — Cheese Roll, Streets of New York 2, Gorillaw and
-  Order, Book Report, Breathe Better Breaths, Smile Analysis and the rest.
-
-Any of these becomes one entry in `apps.js` if you want it back.
+A few others aren't the obvious guess and are worth a glance: Action Vault is
+`action-vault-blond`, Gym Map is `gymmap-iota`, The Stunt Breakdown points at
+`stuntbreakdown3`, and Hair Selfie is `hairselfie.jamie-181.workers.dev`
+(worker name confirmed, subdomain inferred from Stunt Flashcards).
 
 ## Running it
 
-It's a static page — no build step. The site lives in `public/`.
+Static files, no build step. The site is `public/`.
 
 ```bash
-npm start          # serves public/ at http://localhost:4173
+npm start          # http://localhost:4173
 npm run dev        # or the real Workers runtime, via wrangler
+```
+
+To produce a single self-contained HTML file for sharing a preview:
+
+```bash
+npm run build:preview          # → dist/preview.html
 ```
 
 ## Deploying
 
 An assets-only Cloudflare Worker, the same shape as Hair Selfie and Stunt
-Flashcards:
+Flashcards. Pick one:
+
+**1 — From your machine (quickest first deploy).**
 
 ```bash
 npm install
-npx wrangler deploy        # prompts a browser login the first time
+npx wrangler deploy        # opens a browser login the first time
 ```
 
-That publishes to `https://stlapps.<your-subdomain>.workers.dev`. Rename the
-worker in [`wrangler.jsonc`](wrangler.jsonc) if you'd rather it were something
-else, or put it behind a custom domain — `apps.stuntlisting.com` would be the
-obvious one.
+Publishes to `https://stlapps.<your-subdomain>.workers.dev`. Given Stunt
+Flashcards lives on `jamie-181.workers.dev`, expect
+`https://stlapps.jamie-181.workers.dev`.
+
+**2 — On every push, via GitHub Actions.** [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+is already set up and needs two repository secrets
+(Settings → Secrets and variables → Actions):
+
+- `CLOUDFLARE_API_TOKEN` — a token made from the "Edit Cloudflare Workers" template
+- `CLOUDFLARE_ACCOUNT_ID` — on the Workers overview page in the dashboard
+
+**3 — Workers Builds.** In the Cloudflare dashboard: Workers & Pages → Create →
+import this repository. Leave the build command empty (there's nothing to
+build) and set the deploy command to `npx wrangler deploy`.
+
+For a custom domain, add it under the Worker's Settings → Domains & Routes —
+`apps.stuntlisting.com` being the obvious one.
 
 ## How it's built
 
-No framework, no dependencies, no build. Three files do the work:
+No framework, no dependencies, no build. Four files:
 
 | File | What it does |
 | --- | --- |
 | `public/js/apps.js` | The catalog — every app, its URL, colour and glyph |
-| `public/js/icons.js` | The 25 icon drawings |
-| `public/js/app.js` | Builds the grid, runs the clock, paging and search |
-| `public/css/styles.css` | Both layouts — the phone grid and the desktop board |
+| `public/js/icons.js` | The icon drawings |
+| `public/js/app.js` | Builds the board, runs search, settings and the timecode |
+| `public/css/styles.css` | The whole look |
 
-Details worth knowing:
+Notes for whoever edits this next:
 
-- **Icons open in the same tab.** Tapping an app on a phone leaves the home
-  screen and Back brings you home — and inside an installed web app a new tab
-  would throw you out to the browser.
-- **Search** opens on tap, on `⌘K` / `Ctrl-K`, or by just typing a letter, the
-  way a real home screen does. Arrow keys move, Enter opens, Escape closes.
-- **Pages** swipe on a phone and respond to the arrow keys; the dots are
-  buttons. Above 900px the pages stop swiping and open out instead.
-- The status bar hides itself when the app is installed, so its clock doesn't
-  sit under the real one.
+- **Settings are per-device.** Username and hidden apps sit in `localStorage`
+  under one key. Nothing is sent anywhere; there is no server and no account.
+- **`[hidden] { display: none !important }` in the CSS is load-bearing.** The
+  cards, sections and board all set `display`, and a class selector outranks
+  the browser's own `[hidden]` rule — without it, hiding anything silently
+  does nothing and Settings renders on top of the board.
+- **The look** is borrowed from set paperwork: matte black, hairline rules,
+  and monospaced labels of the kind that run down a call sheet. It commits to
+  one dark palette rather than following the system theme — this gets opened
+  on set, often at night.
