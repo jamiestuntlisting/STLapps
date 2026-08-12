@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="Every StuntListing app on one home screen — contracts, rate calculator, Action Vault, flashcards, the arcade and the rest, one tap away.">
+<meta name="theme-color" content="#0b0d12">
+
+<!-- Added to a phone's home screen this opens full-screen, with no browser chrome. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="STL Apps">
+
+<title>StuntListing Apps</title>
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d12'/%3E%3Cg fill='%23ff5a36'%3E%3Crect x='13' y='13' width='15' height='15' rx='4.5'/%3E%3Crect x='36' y='13' width='15' height='15' rx='4.5'/%3E%3Crect x='13' y='36' width='15' height='15' rx='4.5'/%3E%3Crect x='36' y='36' width='15' height='15' rx='4.5'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- The wallpaper: a dark ground with two soft lights bled through it. -->
+<div class="wallpaper" aria-hidden="true">
+  <span class="glow glow-warm"></span>
+  <span class="glow glow-cool"></span>
+</div>
+
+<!-- Status bar. Cosmetic on desktop; on an installed phone app it sits under
+     the real one, so it's hidden there via the display-mode media query. -->
+<header class="statusbar" aria-hidden="true">
+  <span class="statusbar-time" id="clock">9:41</span>
+  <span class="statusbar-icons">
+    <svg viewBox="0 0 20 12" class="sb-signal"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.7" y="5.6" width="3" height="6.4" rx="1"/><rect x="9.4" y="3.2" width="3" height="8.8" rx="1"/><rect x="14.1" y=".8" width="3" height="11.2" rx="1" opacity=".4"/></svg>
+    <svg viewBox="0 0 16 12" class="sb-wifi"><path d="M8 10.6 6.1 8.4a2.9 2.9 0 0 1 3.8 0Z"/><path d="M3.6 5.9a6.6 6.6 0 0 1 8.8 0l-1.3 1.5a4.6 4.6 0 0 0-6.2 0Z"/><path d="M1 3a10.2 10.2 0 0 1 14 0l-1.3 1.5a8.2 8.2 0 0 0-11.4 0Z"/></svg>
+    <svg viewBox="0 0 26 12" class="sb-battery"><rect x=".6" y=".6" width="21" height="10.8" rx="3.2" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".45"/><rect x="2.4" y="2.4" width="15" height="7.2" rx="1.9"/><path d="M23.4 4.2a2.2 2.2 0 0 1 0 3.6Z" opacity=".45"/></svg>
+  </span>
+</header>
+
+<main class="home">
+
+  <!-- Pages of icons. Built from apps.js by app.js. -->
+  <div class="pages" id="pages" tabindex="0" role="group" aria-label="App pages"></div>
+
+  <!-- Page dots. Hidden once the desktop layout opens every page at once. -->
+  <nav class="dots" id="dots" aria-label="Home screen pages"></nav>
+
+  <div class="tray">
+    <button type="button" class="search-pill" id="search-open" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      Search
+    </button>
+
+    <!-- The dock: pinned apps, present on every page. -->
+    <div class="dock" id="dock" role="list" aria-label="Dock"></div>
+  </div>
+</main>
+
+<!-- Spotlight. Opens on tap, on ⌘K / Ctrl-K, or by typing on a keyboard. -->
+<div class="spotlight" id="spotlight" role="dialog" aria-modal="true" aria-label="Search apps" hidden>
+  <div class="spotlight-sheet">
+    <div class="spotlight-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      <input type="search" id="search-input" placeholder="Search apps" autocomplete="off"
+             autocorrect="off" spellcheck="false" aria-label="Search apps">
+      <button type="button" class="spotlight-close" id="search-close" aria-label="Close search">Cancel</button>
+    </div>
+    <ul class="spotlight-results" id="search-results" role="listbox" aria-label="Results"></ul>
+  </div>
+</div>
+
+<noscript>
+  <p class="noscript">This home screen builds its icons with JavaScript. Turn it on, or
+  go straight to <a href="https://www.stuntlisting.com">stuntlisting.com</a>.</p>
+</noscript>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

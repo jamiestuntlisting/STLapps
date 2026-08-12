@@ -1,0 +1,27 @@
+name: Deploy to Cloudflare Workers
+
+# Deploys the static home screen on every push to the main development branch.
+# Needs two repository secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   — token with the "Edit Cloudflare Workers" template
+#   CLOUDFLARE_ACCOUNT_ID  — from the Workers overview page in the dashboard
+
+on:
+  push:
+    branches: [claude/app-home-screen-grid-mb43mj, main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # The action ships wrangler 3.x by default, which predates
+          # assets-only Workers and fails with "Missing entry-point".
+          wranglerVersion: '4.120.0'
