@@ -61,14 +61,14 @@ function resolveNote(app) {
   return app.note || '';
 }
 
-/* ── Cards ──────────────────────────────────────────────────────── */
+/* ── Tiles ──────────────────────────────────────────────────────── */
 
-function cardFor(app) {
+function tileFor(app) {
   const note = resolveNote(app);
 
   /* Settings is a view, not a destination, so it's a button not a link. */
   const el = document.createElement(app.action ? 'button' : 'a');
-  el.className = 'card';
+  el.className = 'tile';
   el.style.setProperty('--tint', TINTS[app.tint] || TINTS.slate);
 
   if (app.action) {
@@ -78,15 +78,15 @@ function cardFor(app) {
     el.href = resolveUrl(app);
   }
 
+  /* The blurb is carried but not printed: it's what search matches on, what a
+     screen reader reads, and what the hover tooltip shows. */
   el.innerHTML = `
-    <span class="card-icon">${glyphSvg(app.glyph)}</span>
-    <span class="card-text">
-      <span class="card-name">${app.name}</span>
-      <span class="card-blurb">${app.blurb}</span>
-    </span>
-    ${note ? '<span class="card-flag" aria-hidden="true"></span>' : ''}`;
+    <span class="tile-icon">${glyphSvg(app.glyph)}</span>
+    <span class="tile-name">${app.name}</span>
+    <span class="sr-only">${app.blurb}</span>
+    ${note ? '<span class="tile-flag" aria-hidden="true"></span>' : ''}`;
 
-  if (note) el.title = `${app.name} — ${note}`;
+  el.title = note ? `${app.name} — ${app.blurb}\n⚠ ${note}` : `${app.name} — ${app.blurb}`;
   return el;
 }
 
@@ -110,7 +110,7 @@ function renderBoard() {
 
     const grid = document.createElement('div');
     grid.className = 'grid';
-    visible.forEach((app) => grid.append(cardFor(app)));
+    visible.forEach((app) => grid.append(tileFor(app)));
     wrap.append(grid);
     board.append(wrap);
   });
@@ -126,10 +126,10 @@ function applyFilter(query) {
   document.querySelectorAll('.section').forEach((section) => {
     let inSection = 0;
 
-    section.querySelectorAll('.card').forEach((card) => {
-      const haystack = card.textContent.toLowerCase();
+    section.querySelectorAll('.tile').forEach((tile) => {
+      const haystack = tile.textContent.toLowerCase();
       const hit = words.every((w) => haystack.includes(w));
-      card.hidden = !hit;
+      tile.hidden = !hit;
       if (hit) inSection += 1;
     });
 
