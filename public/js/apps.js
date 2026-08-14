@@ -87,8 +87,10 @@ export const SECTIONS = [
         note: 'Mid-migration from Vercel to Cloudflare Workers — confirm this URL.',
       },
       {
+        /* id stays 'contract-toolkit' — it's the key Settings uses to
+           remember a hidden app, so renaming it would reset that. */
         id: 'contract-toolkit',
-        name: 'Contract Toolkit',
+        name: 'SAG Contract Helper',
         blurb: 'Deal memos, terms and the rate schedules behind them.',
         url: 'https://stuntlisting-contract-toolkit.vercel.app',
         glyph: 'contract',

@@ -14,7 +14,7 @@ and points the Profile card at your own page.
 | Section | Apps |
 | --- | --- |
 | **You** | Performer Dashboard · Profile · Search · Lists |
-| **On Set** | Rate Calculator · Contract Toolkit · Selfwrap · The Stunt Breakdown · Hair Selfie · Stunt Flashcards |
+| **On Set** | Rate Calculator · SAG Contract Helper · Selfwrap · The Stunt Breakdown · Hair Selfie · Stunt Flashcards |
 | **Learn** | Action Vault · Atlas Action · Gym Map · Stunt School |
 | **Play** | STLG Arcade · Pro High Faller · Pro Stair Faller · Pro Fire Burner |
 | **More** | Stunt News · X Stunts · Store · Settings |
