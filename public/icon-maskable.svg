@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <!-- Maskable: the mark stays inside the middle 80%, so no corner gets clipped. -->
-  <rect width="512" height="512" fill="#0a0b0d"/>
-  <path d="M172 330 256 162l84 168" fill="none" stroke="#ff5a36" stroke-width="38"
-        stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="512" height="512" fill="#ff5a36"/>
+  <text x="256" y="318" text-anchor="middle" fill="#0a0b0d"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+        font-size="158" font-weight="700" letter-spacing="-6">STL</text>
 </svg>

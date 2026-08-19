@@ -6,8 +6,9 @@
  *
  * The brief for these: each one should say what the app *is*, and no two
  * should read the same at 22px. That's why Search is a magnifier with a
- * person inside it rather than a plain magnifier, Hair Selfie is four frames
- * around a head, and the two falling games are drawn from different angles.
+ * person inside it while Advanced Search has the filter sliders, Hair Selfie
+ * is four frames around a head, and the two falling games are drawn from
+ * different angles.
  *
  * Adding one: draw it in a 24×24 box, keep the stroke on 1.7 to match, and
  * name it in the `glyph` field in apps.js.
@@ -36,13 +37,28 @@ const GLYPHS = {
     <path d="M7.8 13.6c0-1.5 1.2-2.5 2.6-2.5s2.6 1 2.6 2.5"/>
     <path d="m15.1 15.1 4.5 4.5"/>`,
 
+  /* A membership card with a tick — the question it answers is "am I paid up". */
+  membership: `
+    <rect x="3" y="5.4" width="18" height="13.2" rx="2.2"/>
+    <path d="M3 9.6h18"/>
+    <path d="m9.4 14.9 1.7 1.7 3.5-3.6"/>`,
+
+  /* Plain Search is a magnifier with a person in it; this one has the filter
+     sliders instead, so the pair reads as "find someone" vs "narrow it down". */
+  advsearch: `
+    <circle cx="10.4" cy="10.4" r="6.3"/>
+    <path d="M7.4 8.8h6M7.4 12h6"/>
+    <circle cx="9.1" cy="8.8" r="1.15" fill="currentColor" stroke="none"/>
+    <circle cx="12.3" cy="12" r="1.15" fill="currentColor" stroke="none"/>
+    <path d="m15.1 15.1 4.5 4.5"/>`,
+
   /* Rows of people — a crew list. */
   lists: `
     <circle cx="5.6" cy="7" r="1.7"/><path d="M9.5 7h9"/>
     <circle cx="5.6" cy="12" r="1.7"/><path d="M9.5 12h9"/>
     <circle cx="5.6" cy="17" r="1.7"/><path d="M9.5 17h6"/>`,
 
-  /* ── On set ───────────────────────────────────────────────────── */
+  /* ── Work: on set, and getting hired ──────────────────────────── */
 
   calculator: `
     <rect x="5" y="3" width="14" height="18" rx="2.2"/>
@@ -82,6 +98,22 @@ const GLYPHS = {
     <circle cx="10.3" cy="11.9" r="1.6"/>
     <path d="M7.5 16.6c0-1.6 1.3-2.6 2.8-2.6s2.8 1 2.8 2.6"/>`,
 
+  jobs: `
+    <rect x="3" y="7.4" width="18" height="12" rx="2.2"/>
+    <path d="M9 7.4V5.8a1.6 1.6 0 0 1 1.6-1.6h2.8A1.6 1.6 0 0 1 15 5.8v1.6"/>
+    <path d="M3 12.6h18"/>
+    <path d="M10.6 12.6v1.7h2.8v-1.7"/>`,
+
+  /* One head, framed by viewfinder corners — a headshot being taken, as
+     against the ID card (Profile) and the four-up grid (Hair Selfie). */
+  headshot: `
+    <path d="M3.6 8V5.4a1.8 1.8 0 0 1 1.8-1.8H8"/>
+    <path d="M16 3.6h2.6a1.8 1.8 0 0 1 1.8 1.8V8"/>
+    <path d="M20.4 16v2.6a1.8 1.8 0 0 1-1.8 1.8H16"/>
+    <path d="M8 20.4H5.4a1.8 1.8 0 0 1-1.8-1.8V16"/>
+    <circle cx="12" cy="10.5" r="2.5"/>
+    <path d="M7.9 17.3c0-2.2 1.8-3.7 4.1-3.7s4.1 1.5 4.1 3.7"/>`,
+
   /* ── Learn ────────────────────────────────────────────────────── */
 
   /* A safe door with a play button behind it. */
@@ -101,11 +133,6 @@ const GLYPHS = {
     <path d="M12 21.2c0 0 6.9-6 6.9-10.9a6.9 6.9 0 1 0-13.8 0c0 4.9 6.9 10.9 6.9 10.9Z"/>
     <path d="M9.2 10.3h5.6"/>
     <path d="M8.5 8.9v2.8M15.5 8.9v2.8"/>`,
-
-  school: `
-    <path d="m2.8 8.8 9.2-4.3 9.2 4.3-9.2 4.3Z"/>
-    <path d="M6.6 10.7v4.9c0 1.6 2.4 2.9 5.4 2.9s5.4-1.3 5.4-2.9v-4.9"/>
-    <path d="M20.4 9.3v5.2"/>`,
 
   /* ── Play ─────────────────────────────────────────────────────── */
 
@@ -133,16 +160,17 @@ const GLYPHS = {
     <path d="M12 21a3 3 0 0 1-1.6-5.6c.5 1 1 1.3 1.6 1.5.7-1.1.6-2.2.3-3.1 1.5.9 2.7 2.3 2.7 4.2A3 3 0 0 1 12 21Z"
           fill="currentColor" stroke="none" opacity=".55"/>`,
 
-  /* ── More ─────────────────────────────────────────────────────── */
+  megaphone: `
+    <path d="M5.5 9.6h2.6l6.4-4.1v13l-6.4-4.1H5.5A1.5 1.5 0 0 1 4 12.9v-1.8a1.5 1.5 0 0 1 1.5-1.5Z"/>
+    <path d="M17.6 9.3a4 4 0 0 1 0 5.4"/>
+    <path d="M8.2 14.4v4.2a1.4 1.4 0 0 0 2.8 0v-2.4"/>`,
+
+  /* ── Odds and ends ────────────────────────────────────────────── */
 
   news: `
     <path d="M3.5 5.6h13.2v13.3a1.6 1.6 0 0 1-1.6 1.6H5.1a1.6 1.6 0 0 1-1.6-1.6Z"/>
     <path d="M16.7 9h2.2a1.6 1.6 0 0 1 1.6 1.6v8a1.9 1.9 0 0 1-3.8 0"/>
     <path d="M6.4 8.8h7M6.4 12h7M6.4 15.2h4.4"/>`,
-
-  xmark: `
-    <circle cx="12" cy="12" r="8.6"/>
-    <path d="m8.9 8.9 6.2 6.2M15.1 8.9l-6.2 6.2" stroke-width="2"/>`,
 
   store: `
     <path d="M5.4 7.6h13.2l1 12a1.4 1.4 0 0 1-1.4 1.5H5.8a1.4 1.4 0 0 1-1.4-1.5Z"/>

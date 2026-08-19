@@ -16,16 +16,12 @@ const STORE_KEY = 'stlapps.prefs.v1';
 const prefs = loadPrefs();
 
 function loadPrefs() {
-  const empty = { username: '', hidden: [] };
   try {
     const saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
-    return {
-      username: typeof saved.username === 'string' ? saved.username : '',
-      hidden: Array.isArray(saved.hidden) ? saved.hidden : [],
-    };
+    return { hidden: Array.isArray(saved.hidden) ? saved.hidden : [] };
   } catch {
     /* Corrupt or unavailable storage shouldn't take the page down. */
-    return empty;
+    return { hidden: [] };
   }
 }
 
@@ -47,24 +43,10 @@ function flashSaved() {
   savedTimer = setTimeout(() => { el.dataset.on = 'false'; }, 1400);
 }
 
-/* ── The one app whose link depends on a preference ─────────────── */
-
-function resolveUrl(app) {
-  if (app.id !== 'profile') return app.url;
-  const user = prefs.username.trim().replace(/^\/+|\/+$/g, '');
-  return user ? `https://www.stuntlisting.com/${encodeURIComponent(user)}` : app.url;
-}
-
-/* The Profile card only carries a warning while it has nowhere better to go. */
-function resolveNote(app) {
-  if (app.id === 'profile' && prefs.username.trim()) return '';
-  return app.note || '';
-}
-
 /* ── Tiles ──────────────────────────────────────────────────────── */
 
 function tileFor(app) {
-  const note = resolveNote(app);
+  const note = app.note || '';
 
   /* Settings is a view, not a destination, so it's a button not a link. */
   const el = document.createElement(app.action ? 'button' : 'a');
@@ -75,7 +57,7 @@ function tileFor(app) {
     el.type = 'button';
     el.addEventListener('click', () => showSettings());
   } else {
-    el.href = resolveUrl(app);
+    el.href = app.url;
   }
 
   /* The blurb is carried but not printed: it's what search matches on, what a
@@ -105,7 +87,6 @@ function renderBoard() {
     wrap.innerHTML = `
       <div class="section-head">
         <h2 class="section-label">${section.label}</h2>
-        <p class="section-hint">${section.hint}</p>
       </div>`;
 
     const grid = document.createElement('div');
@@ -213,54 +194,19 @@ function renderToggles() {
   });
 }
 
-function updateUsernamePreview() {
-  const user = prefs.username.trim().replace(/^\/+|\/+$/g, '');
-  $('#username-preview').textContent = user
-    ? `Profile → stuntlisting.com/${user}`
-    : 'Profile → your performer dashboard';
-}
-
 function wireSettings() {
   $('#settings-back').addEventListener('click', showBoard);
 
-  const username = $('#username');
-  username.value = prefs.username;
-
-  username.addEventListener('input', () => {
-    prefs.username = username.value;
-    updateUsernamePreview();
-    savePrefs();
-    renderBoard();
-  });
-
   $('#reset').addEventListener('click', () => {
-    prefs.username = '';
     prefs.hidden = [];
-    username.value = '';
-    updateUsernamePreview();
     savePrefs();
     renderToggles();
     renderBoard();
   });
 
   renderToggles();
-  updateUsernamePreview();
 
   if (location.hash === '#settings') showSettings();
-}
-
-/* ── Timecode ───────────────────────────────────────────────────── */
-
-function startStamp() {
-  const stamp = $('#stamp');
-  const tick = () => {
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    stamp.textContent =
-      `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  };
-  tick();
-  setInterval(tick, 1000);
 }
 
 /* ── Go ─────────────────────────────────────────────────────────── */
@@ -268,4 +214,3 @@ function startStamp() {
 renderBoard();
 wireSearch();
 wireSettings();
-startStamp();

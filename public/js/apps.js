@@ -6,18 +6,18 @@
  *
  * Each app takes:
  *   id      unique slug — also the key settings uses to remember hidden apps
- *   name    the title on the card
- *   blurb   one line saying what it actually is, shown under the name
- *   url     where the card goes
+ *   name    the label under the icon
+ *   blurb   one line saying what it is — not printed on the grid, but it's
+ *           what search matches on and what a screen reader reads out
+ *   url     where the tile goes
  *   glyph   which drawing to use, from the set in icons.js
  *   tint    the icon colour — one of the TINTS below
  *   note    optional — flags a link that still needs confirming
  *   action  optional — 'settings' opens the in-app settings view instead
  */
 
-/* A deliberately short palette. Colour appears only inside the small icon
-   tiles, never on the card itself — that's what keeps a wall of apps calm
-   instead of turning it into a patchwork. */
+/* A deliberately short palette. Colour appears only inside the icon tile,
+   which is what keeps a wall of apps calm instead of a patchwork. */
 export const TINTS = {
   orange: '#ff5a36',   // StuntListing house colour
   amber:  '#f2a33c',
@@ -33,11 +33,10 @@ export const SECTIONS = [
   {
     id: 'you',
     label: 'You',
-    hint: 'Your StuntListing account',
     apps: [
       {
         id: 'performer-dashboard',
-        name: 'Performer Dashboard',
+        name: 'Dashboard',
         blurb: 'Your home on StuntListing — work, messages, everything.',
         url: 'https://www.stuntlisting.com/performer_dashboard',
         glyph: 'dashboard',
@@ -47,12 +46,19 @@ export const SECTIONS = [
         id: 'profile',
         name: 'Profile',
         blurb: 'Your public page — reels, skills, sizes, availability.',
-        /* Replaced with stuntlisting.com/<your-username> once a username is
-           set in Settings, since that's where profiles actually live. */
         url: 'https://www.stuntlisting.com/performer_dashboard',
         glyph: 'profile',
         tint: 'amber',
-        note: 'Profiles live at stuntlisting.com/<username> — set yours in Settings and this points straight at it.',
+        note: 'Profiles live at stuntlisting.com/<username>, so there is no one URL for everyone — this goes to the dashboard.',
+      },
+      {
+        id: 'membership',
+        name: 'Membership',
+        blurb: 'Your plan — what you have bought, and what runs out when.',
+        url: 'https://www.stuntlisting.com/membership',
+        glyph: 'membership',
+        tint: 'green',
+        note: 'Guessed URL — swap it for the real membership page.',
       },
       {
         id: 'search',
@@ -63,6 +69,14 @@ export const SECTIONS = [
         tint: 'blue',
       },
       {
+        id: 'advanced-search',
+        name: 'Advanced Search',
+        blurb: 'X Stunts — deeper search across the Canadian stunt database.',
+        url: 'https://xstunts.vercel.app',
+        glyph: 'advsearch',
+        tint: 'blue',
+      },
+      {
         id: 'lists',
         name: 'Lists',
         blurb: 'Build and share a crew list for a show.',
@@ -70,12 +84,70 @@ export const SECTIONS = [
         glyph: 'lists',
         tint: 'teal',
       },
+      {
+        id: 'settings',
+        name: 'Settings',
+        blurb: 'Hide the apps you never open.',
+        url: '#settings',
+        glyph: 'gear',
+        tint: 'slate',
+        action: 'settings',
+      },
+    ],
+  },
+  {
+    id: 'getting-hired',
+    label: 'Getting Hired',
+    apps: [
+      {
+        id: 'store',
+        name: 'Store',
+        blurb: 'StuntListing merch and the Atlas Action course.',
+        url: 'https://stuntlisting.myshopify.com',
+        glyph: 'store',
+        tint: 'orange',
+      },
+      {
+        id: 'stunt-breakdown',
+        name: 'The Stunt Breakdown',
+        blurb: "What's filming, and who's hiring.",
+        url: 'https://stuntbreakdown3.vercel.app',
+        glyph: 'slate',
+        tint: 'red',
+      },
+      {
+        id: 'stunt-jobs',
+        name: 'Stunt Jobs',
+        blurb: 'Open calls and jobs going out now.',
+        url: 'https://www.stuntlisting.com/jobs',
+        glyph: 'jobs',
+        tint: 'amber',
+        note: 'Guessed URL — swap it for the real jobs page.',
+      },
+      {
+        id: 'hair-selfie',
+        name: 'Hair Selfie',
+        blurb: 'Four-angle hair reference sheet, shot on your phone.',
+        url: 'https://hairselfie.jamie-181.workers.dev',
+        glyph: 'hairgrid',
+        tint: 'violet',
+      },
+      {
+        id: 'quick-headshot',
+        name: 'Quick Headshot',
+        /* No web tool for this yet, so the tile opens a text message to the
+           headshot line. Swap the url for a real one when it exists. */
+        blurb: 'Text a photo in and get a headshot back.',
+        url: 'sms:+18312788687',
+        glyph: 'headshot',
+        tint: 'teal',
+        note: 'Opens a text message to (831) 278-8687 — placeholder until there is a web tool.',
+      },
     ],
   },
   {
     id: 'on-set',
     label: 'On Set',
-    hint: 'Tools for the working day',
     apps: [
       {
         id: 'rate-calculator',
@@ -105,24 +177,8 @@ export const SECTIONS = [
         tint: 'teal',
       },
       {
-        id: 'stunt-breakdown',
-        name: 'The Stunt Breakdown',
-        blurb: "What's filming, and who's hiring.",
-        url: 'https://stuntbreakdown3.vercel.app',
-        glyph: 'slate',
-        tint: 'red',
-      },
-      {
-        id: 'hair-selfie',
-        name: 'Hair Selfie',
-        blurb: 'Four-angle hair reference sheet, shot on your phone.',
-        url: 'https://hairselfie.jamie-181.workers.dev',
-        glyph: 'hairgrid',
-        tint: 'violet',
-      },
-      {
         id: 'stunt-flashcards',
-        name: 'Stunt Flashcards',
+        name: 'Stunt People Flashcards',
         blurb: 'Paste a list and learn everyone on it — faces and skills.',
         url: 'https://stunt-flashcards.jamie-181.workers.dev',
         glyph: 'flashcards',
@@ -133,7 +189,6 @@ export const SECTIONS = [
   {
     id: 'learn',
     label: 'Learn',
-    hint: 'Training and the people who teach it',
     apps: [
       {
         id: 'action-vault',
@@ -160,24 +215,25 @@ export const SECTIONS = [
         tint: 'teal',
       },
       {
-        id: 'stunt-school',
-        name: 'Stunt School',
-        blurb: 'The virtual stunt school — lessons and school analytics.',
-        url: 'https://stunt-school-link.vercel.app',
-        glyph: 'school',
-        tint: 'blue',
+        id: 'stunt-news',
+        name: 'Stunt News',
+        blurb: 'Build the newsletter — compose, preview, export the HTML.',
+        url: 'https://stunt-news.vercel.app',
+        glyph: 'news',
+        tint: 'slate',
       },
     ],
   },
   {
     id: 'play',
     label: 'Play',
-    hint: 'The arcade',
     apps: [
       {
+        /* The arcade is the front door. The individual games below are the
+           ones confirmed to still stand up on their own. */
         id: 'stlg-arcade',
-        name: 'STLG Arcade',
-        blurb: 'The whole cabinet — every StuntListing game in one place.',
+        name: 'All Games',
+        blurb: 'The whole arcade cabinet — every StuntListing game.',
         url: 'https://stlg-arcade.vercel.app',
         glyph: 'gamepad',
         tint: 'red',
@@ -206,51 +262,19 @@ export const SECTIONS = [
         glyph: 'flame',
         tint: 'amber',
       },
-    ],
-  },
-  {
-    id: 'more',
-    label: 'More',
-    hint: 'Everything else',
-    apps: [
       {
-        id: 'stunt-news',
-        name: 'Stunt News',
-        blurb: 'Build the newsletter — compose, preview, export the HTML.',
-        url: 'https://stunt-news.vercel.app',
-        glyph: 'news',
-        tint: 'slate',
-      },
-      {
-        id: 'x-stunts',
-        name: 'X Stunts',
-        blurb: 'The Canadian stunt community site.',
-        url: 'https://xstunts.vercel.app',
-        glyph: 'xmark',
-        tint: 'red',
-      },
-      {
-        id: 'store',
-        name: 'Store',
-        blurb: 'StuntListing merch and the Atlas Action course.',
-        url: 'https://stuntlisting.myshopify.com',
-        glyph: 'store',
-        tint: 'amber',
-      },
-      {
-        id: 'settings',
-        name: 'Settings',
-        blurb: 'Hide apps you never use, and set your profile link.',
-        url: '#settings',
-        glyph: 'gear',
-        tint: 'slate',
-        action: 'settings',
+        id: 'coordinator-please',
+        name: 'Coordinator Please',
+        blurb: 'The coordinator game — run the day and keep everyone alive.',
+        url: 'https://coordinator-please.vercel.app',
+        glyph: 'megaphone',
+        tint: 'green',
       },
     ],
   },
 ];
 
-/* One flat list, for search and for the settings list. */
+/* One flat list, for search and for the settings toggles. */
 export const ALL_APPS = SECTIONS.flatMap((section) =>
   section.apps.map((app) => ({ ...app, section: section.label })),
 );

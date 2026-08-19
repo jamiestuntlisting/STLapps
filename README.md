@@ -1,16 +1,15 @@
 # StuntListing Apps
 
-One launcher for everything we've built. Twenty-two apps on a single screen of
-icons, sorted into what you'd actually be doing — your account, the working
-day, training, the arcade.
+One launcher for everything we've built. Twenty-five apps on a single screen of
+icons, sorted into what you'd actually be doing — your account, getting hired,
+the working day, training, the arcade.
 
 It's a home screen, but not a phone's: the tiles are matte plates with a
 tinted line drawing rather than glossy squircles, and they sit under titled
 section rules instead of floating on a wallpaper. No dock, no page dots,
 nothing to swipe.
 
-Search from the top rail or press `/`. Settings hides the apps you never open
-and points the Profile tile at your own page.
+Search from the top rail or press `/`. Settings hides the apps you never open.
 
 **Live:** _not deployed yet — see [Deploying](#deploying)._
 
@@ -18,11 +17,15 @@ and points the Profile tile at your own page.
 
 | Section | Apps |
 | --- | --- |
-| **You** | Performer Dashboard · Profile · Search · Lists |
-| **On Set** | Rate Calculator · SAG Contract Helper · Selfwrap · The Stunt Breakdown · Hair Selfie · Stunt Flashcards |
-| **Learn** | Action Vault · Atlas Action · Gym Map · Stunt School |
-| **Play** | STLG Arcade · Pro High Faller · Pro Stair Faller · Pro Fire Burner |
-| **More** | Stunt News · X Stunts · Store · Settings |
+| **You** | Dashboard · Profile · Membership · Search · Advanced Search · Lists · Settings |
+| **Getting Hired** | Store · The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
+| **On Set** | Rate Calculator · SAG Contract Helper · Selfwrap · Stunt People Flashcards |
+| **Learn** | Action Vault · Atlas Action · Gym Map · Stunt News |
+| **Play** | All Games · Pro High Faller · Pro Stair Faller · Pro Fire Burner · Coordinator Please |
+
+Stunt School came off — it's the same thing as the arcade. The individual game
+links are kept only for the three that still stand up; everything else goes
+through **All Games**, so a stale game URL can't strand anyone.
 
 ## Changing what's on it
 
@@ -48,22 +51,25 @@ turning into a patchwork.
 
 Drawings live in [`public/js/icons.js`](public/js/icons.js). Two rules when
 adding one: draw it in a 24×24 box at stroke weight 1.7, and make sure it
-can't be mistaken for another icon at 25px — that's why Search is a magnifier
-with a person inside it, and the two falling games are drawn from different
-angles.
+can't be mistaken for another icon at 30px — that's why Search is a magnifier
+with a person in the lens while Advanced Search has the filter sliders, and
+the two falling games are drawn from different angles.
 
 ## Links worth confirming
 
 This session's network blocked `*.vercel.app`, `*.workers.dev`, `github.io`
 and `stuntlisting.com`, so no link below was opened — they came from the
 Vercel and GitHub APIs, from each repo's own README, and from URL patterns
-found in the Stunt Flashcards and Hair Selfie source. Two are flagged in the
-app with an amber dot:
+found in the Stunt Flashcards and Hair Selfie source. The five below are
+flagged in the app with an amber dot:
 
 | App | URL | Why |
 | --- | --- | --- |
 | **Rate Calculator** | `rate-calculator-v3.vercel.app` | The repo is mid-migration from Vercel to Cloudflare Workers. Its last three Vercel production deploys failed and the project no longer carries that clean alias — this is the URL the repo itself advertises. If it's on a Worker now, point it there. |
-| **Profile** | `stuntlisting.com/performer_dashboard` | Profiles live at `stuntlisting.com/<username>`, so there's no single URL that works for everyone. Set a username in Settings and the tile points straight at your page; until then it falls back to the dashboard. |
+| **Membership** | `stuntlisting.com/membership` | Guessed. Nothing in any repo names the real membership page. |
+| **Stunt Jobs** | `stuntlisting.com/jobs` | Guessed, same reason. |
+| **Profile** | `stuntlisting.com/performer_dashboard` | Profiles live at `stuntlisting.com/<username>`, so no single URL works for everyone. Falls back to the dashboard. |
+| **Quick Headshot** | `sms:+18312788687` | Not a web app — the tile opens a text message to the headshot line. Swap the `url` for a real page when one exists. |
 
 A few others aren't the obvious guess and are worth a glance: Action Vault is
 `action-vault-blond`, Gym Map is `gymmap-iota`, The Stunt Breakdown points at
@@ -123,13 +129,11 @@ No framework, no dependencies, no build. Four files:
 | --- | --- |
 | `public/js/apps.js` | The catalog — every app, its URL, colour and glyph |
 | `public/js/icons.js` | The icon drawings |
-| `public/js/app.js` | Builds the grid, runs search, settings and the timecode |
+| `public/js/app.js` | Builds the grid, runs search and settings |
 | `public/css/styles.css` | The whole look |
 
 Notes for whoever edits this next:
 
-- **Settings are per-device.** Username and hidden apps sit in `localStorage`
-  under one key. Nothing is sent anywhere; there is no server and no account.
 - **`[hidden] { display: none !important }` in the CSS is load-bearing.** The
   tiles, sections and board all set `display`, and a class selector outranks
   the browser's own `[hidden]` rule — without it, hiding anything silently
@@ -145,3 +149,7 @@ Notes for whoever edits this next:
 - **The grid's 78px minimum column is deliberate** — it's the widest column
   that still fits four across a small phone. Most sections hold four apps, so
   anything wider strands the fourth on a row of its own.
+- **Settings only hides apps.** It used to also take a StuntListing username
+  to build the Profile link; that's an account setting that belongs on
+  StuntListing itself, so it's gone. Preferences are per-device, in
+  `localStorage`.
