@@ -11,13 +11,15 @@
  *           what search matches on and what a screen reader reads out
  *   url     where the tile goes
  *   glyph   which drawing to use, from the set in icons.js
- *   tint    the icon colour — one of the TINTS below
  *   note    optional — flags a link that still needs confirming
  *   action  optional — 'settings' opens the in-app settings view instead
  */
 
-/* A deliberately short palette. Colour appears only inside the icon tile,
-   which is what keeps a wall of apps calm instead of a patchwork. */
+/* A deliberately short palette. Colour belongs to the *row*, not the app —
+   every tile in a section shares one tint, and it's the shape of the drawing
+   that tells them apart. That's why there is no per-app `tint`: the rule
+   can't be broken by accident. Keep sections to four tiles so each one is a
+   single row on a phone. */
 export const TINTS = {
   orange: '#ff5a36',   // StuntListing house colour
   amber:  '#f2a33c',
@@ -33,6 +35,7 @@ export const SECTIONS = [
   {
     id: 'performer',
     label: 'Performer',
+    tint: 'orange',
     apps: [
       {
         id: 'profile',
@@ -40,7 +43,6 @@ export const SECTIONS = [
         blurb: 'Your public page — reels, skills, sizes, availability.',
         url: 'https://www.stuntlisting.com/performer_dashboard',
         glyph: 'profile',
-        tint: 'amber',
         note: 'Profiles live at stuntlisting.com/<username>, so there is no one URL for everyone — this goes to the dashboard.',
       },
       {
@@ -49,7 +51,6 @@ export const SECTIONS = [
         blurb: 'Your home on StuntListing — work, messages, everything.',
         url: 'https://www.stuntlisting.com/performer_dashboard',
         glyph: 'dashboard',
-        tint: 'orange',
       },
       {
         id: 'membership',
@@ -57,7 +58,6 @@ export const SECTIONS = [
         blurb: 'Your plan — what you have bought, and what runs out when.',
         url: 'https://www.stuntlisting.com/membership',
         glyph: 'membership',
-        tint: 'green',
         note: 'Guessed URL — swap it for the real membership page.',
       },
       {
@@ -66,7 +66,6 @@ export const SECTIONS = [
         blurb: 'Hide the apps you never open.',
         url: '#settings',
         glyph: 'gear',
-        tint: 'slate',
         action: 'settings',
       },
     ],
@@ -74,6 +73,7 @@ export const SECTIONS = [
   {
     id: 'coordinating',
     label: 'Coordinating',
+    tint: 'blue',
     apps: [
       {
         id: 'search',
@@ -81,7 +81,6 @@ export const SECTIONS = [
         blurb: 'Find performers by skill, size, location and look.',
         url: 'https://www.stuntlisting.com/coordinator_dashboard',
         glyph: 'search',
-        tint: 'blue',
       },
       {
         id: 'advanced-search',
@@ -89,7 +88,6 @@ export const SECTIONS = [
         blurb: 'X Stunts — deeper search across the Canadian stunt database.',
         url: 'https://xstunts.vercel.app',
         glyph: 'advsearch',
-        tint: 'blue',
       },
       {
         id: 'lists',
@@ -97,13 +95,21 @@ export const SECTIONS = [
         blurb: 'Build and share a crew list for a show.',
         url: 'https://www.stuntlisting.com/lists/',
         glyph: 'lists',
-        tint: 'teal',
+      },
+      {
+        id: 'post-a-job',
+        name: 'Post a Job',
+        blurb: 'Put a call out — hire for a show.',
+        url: 'https://www.stuntlisting.com/post-a-job',
+        glyph: 'postjob',
+        note: 'Guessed URL — swap it for the real post-a-job page.',
       },
     ],
   },
   {
     id: 'getting-hired',
     label: 'Getting Hired',
+    tint: 'amber',
     apps: [
       {
         id: 'stunt-breakdown',
@@ -111,7 +117,6 @@ export const SECTIONS = [
         blurb: "What's filming, and who's hiring.",
         url: 'https://stuntbreakdown3.vercel.app',
         glyph: 'slate',
-        tint: 'red',
       },
       {
         id: 'stunt-jobs',
@@ -119,7 +124,6 @@ export const SECTIONS = [
         blurb: 'Open calls and jobs going out now.',
         url: 'https://www.stuntlisting.com/jobs',
         glyph: 'jobs',
-        tint: 'amber',
         note: 'Guessed URL — swap it for the real jobs page.',
       },
       {
@@ -128,7 +132,6 @@ export const SECTIONS = [
         blurb: 'Four-angle hair reference sheet, shot on your phone.',
         url: 'https://hairselfie.jamie-181.workers.dev',
         glyph: 'hairgrid',
-        tint: 'violet',
       },
       {
         id: 'quick-headshot',
@@ -138,7 +141,6 @@ export const SECTIONS = [
         blurb: 'Text a photo in and get a headshot back.',
         url: 'sms:+18312788687',
         glyph: 'headshot',
-        tint: 'teal',
         note: 'Opens a text message to (831) 278-8687 — placeholder until there is a web tool.',
       },
     ],
@@ -146,6 +148,7 @@ export const SECTIONS = [
   {
     id: 'on-set',
     label: 'On Set',
+    tint: 'green',
     apps: [
       {
         id: 'rate-calculator',
@@ -153,7 +156,6 @@ export const SECTIONS = [
         blurb: 'Work out a day rate — overtime, adjustments, meal penalties.',
         url: 'https://rate-calculator-v3.vercel.app',
         glyph: 'calculator',
-        tint: 'green',
         note: 'Mid-migration from Vercel to Cloudflare Workers — confirm this URL.',
       },
       {
@@ -164,7 +166,6 @@ export const SECTIONS = [
         blurb: 'Deal memos, terms and the rate schedules behind them.',
         url: 'https://stuntlisting-contract-toolkit.vercel.app',
         glyph: 'contract',
-        tint: 'blue',
       },
       {
         id: 'selfwrap',
@@ -172,7 +173,6 @@ export const SECTIONS = [
         blurb: 'Log your own hours as the day runs.',
         url: 'https://selfwrap.vercel.app',
         glyph: 'stopwatch',
-        tint: 'teal',
       },
       {
         id: 'stunt-flashcards',
@@ -180,13 +180,13 @@ export const SECTIONS = [
         blurb: 'Paste a list and learn everyone on it — faces and skills.',
         url: 'https://stunt-flashcards.jamie-181.workers.dev',
         glyph: 'flashcards',
-        tint: 'amber',
       },
     ],
   },
   {
     id: 'learn',
     label: 'Learn',
+    tint: 'violet',
     apps: [
       {
         id: 'action-vault',
@@ -194,7 +194,6 @@ export const SECTIONS = [
         blurb: 'The training library — reels, videos, podcasts and books.',
         url: 'https://action-vault-blond.vercel.app',
         glyph: 'vault',
-        tint: 'violet',
       },
       {
         id: 'atlas-action',
@@ -202,7 +201,6 @@ export const SECTIONS = [
         blurb: 'Essentials for Stunts — the on-demand course.',
         url: 'https://www.atlasaction.com',
         glyph: 'globe',
-        tint: 'amber',
       },
       {
         id: 'gymmap',
@@ -210,7 +208,6 @@ export const SECTIONS = [
         blurb: 'World map of stunt training schools and gyms.',
         url: 'https://gymmap-iota.vercel.app',
         glyph: 'gympin',
-        tint: 'teal',
       },
       {
         id: 'stunt-news',
@@ -218,14 +215,21 @@ export const SECTIONS = [
         blurb: 'Build the newsletter — compose, preview, export the HTML.',
         url: 'https://stunt-news.vercel.app',
         glyph: 'news',
-        tint: 'slate',
       },
     ],
   },
   {
-    id: 'play',
-    label: 'Play',
+    id: 'etc',
+    label: 'Etc',
+    tint: 'teal',
     apps: [
+      {
+        id: 'store',
+        name: 'Store',
+        blurb: 'StuntListing merch and the Atlas Action course.',
+        url: 'https://stuntlisting.myshopify.com',
+        glyph: 'store',
+      },
       {
         /* The arcade is the front door. The individual games below are the
            ones confirmed to still stand up on their own. */
@@ -234,31 +238,6 @@ export const SECTIONS = [
         blurb: 'The whole arcade cabinet — every StuntListing game.',
         url: 'https://stlg-arcade.vercel.app',
         glyph: 'gamepad',
-        tint: 'red',
-      },
-      {
-        id: 'pro-high-faller',
-        name: 'Pro High Faller',
-        blurb: 'Ride the high fall down to the box.',
-        url: 'https://pro-high-faller.vercel.app',
-        glyph: 'highfall',
-        tint: 'blue',
-      },
-      {
-        id: 'pro-stair-faller',
-        name: 'Pro Stair Faller',
-        blurb: 'Take the stairs the hard way.',
-        url: 'https://pro-stair-faller.vercel.app',
-        glyph: 'stairs',
-        tint: 'violet',
-      },
-      {
-        id: 'pro-fire-burner',
-        name: 'Pro Fire Burner',
-        blurb: 'Gel up, light up, hit the safety.',
-        url: 'https://pro-fire-burner.vercel.app',
-        glyph: 'flame',
-        tint: 'amber',
       },
       {
         id: 'coordinator-please',
@@ -266,21 +245,6 @@ export const SECTIONS = [
         blurb: 'The coordinator game — run the day and keep everyone alive.',
         url: 'https://coordinator-please.vercel.app',
         glyph: 'megaphone',
-        tint: 'green',
-      },
-    ],
-  },
-  {
-    id: 'ect',
-    label: 'Ect',
-    apps: [
-      {
-        id: 'store',
-        name: 'Store',
-        blurb: 'StuntListing merch and the Atlas Action course.',
-        url: 'https://stuntlisting.myshopify.com',
-        glyph: 'store',
-        tint: 'orange',
       },
     ],
   },

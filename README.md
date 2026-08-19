@@ -1,8 +1,9 @@
 # StuntListing Apps
 
-One launcher for everything we've built. Twenty-five apps on a single screen of
+One launcher for everything we've built. Twenty-three apps on a single screen of
 icons, grouped by what you're actually doing — your own account, coordinating
-a show, getting hired, the working day, training, the arcade.
+a show, getting hired, the working day, and training. Each group is one row,
+in one colour.
 
 It's a home screen, but not a phone's: the tiles are matte plates with a
 tinted line drawing rather than glossy squircles, and they sit under titled
@@ -15,24 +16,28 @@ Search from the top rail or press `/`. Settings hides the apps you never open.
 
 ## What's on it
 
-| Section | Apps |
-| --- | --- |
-| **Performer** | Profile · Dashboard · Membership · Settings |
-| **Coordinating** | Search · Advanced Search · Lists |
-| **Getting Hired** | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
-| **On Set** | Rate Calculator · SAG Contract Helper · Selfwrap · Stunt People Flashcards |
-| **Learn** | Action Vault · Atlas Action · Gym Map · Stunt News |
-| **Play** | All Games · Pro High Faller · Pro Stair Faller · Pro Fire Burner · Coordinator Please |
-| **Ect** | Store |
+| Section | | Apps |
+| --- | --- | --- |
+| **Performer** | orange | Profile · Dashboard · Membership · Settings |
+| **Coordinating** | blue | Search · Advanced Search · Lists · Post a Job |
+| **Getting Hired** | amber | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
+| **On Set** | green | Rate Calculator · SAG Contract Helper · Selfwrap · Stunt People Flashcards |
+| **Learn** | violet | Action Vault · Atlas Action · Gym Map · Stunt News |
+| **Etc** | teal | Store · All Games · Coordinator Please |
 
-The two sides of the job get their own groups: **Performer** is your own
-account, **Coordinating** is the tools you reach for when you're the one
-hiring. "Ect" is spelled the way it was asked for; it's `label: 'Ect'` in
-`apps.js` if it should ever become "Etc."
+Two rules hold the layout together, and both are worth keeping:
 
-Stunt School came off — it's the same thing as the arcade. The individual game
-links are kept only for the three that still stand up; everything else goes
-through **All Games**, so a stale game URL can't strand anyone.
+- **Four tiles per section, so each one is a single row on a phone.** Five
+  strands a lonely tile on a second row, which is what the board used to look
+  like.
+- **One colour per row.** Every tile in a section shares the section's tint,
+  and it's the shape of the drawing that tells the apps apart. There is no
+  per-app `tint` field, so the rule can't be broken by accident.
+
+The four-per-row cap is why the arcade collapsed to a single **All Games**
+tile: Pro High Faller, Pro Stair Faller and Pro Fire Burner no longer have
+tiles of their own and are reached through it. Add them back as their own
+section if you'd rather have them one tap away.
 
 ## Changing what's on it
 
@@ -47,14 +52,15 @@ toggles all rebuild from it.
   blurb: 'One line saying what it actually is.',
   url: 'https://example.com',
   glyph: 'camera',          // any name from public/js/icons.js
-  tint: 'teal',             // one of the eight in TINTS
 }
 ```
 
+The colour isn't set here — it comes from the section's `tint`.
+
 Move an app between sections by moving its entry between the `SECTIONS`
-arrays. Colour comes from the short `TINTS` palette at the top of the file —
-it only ever appears inside the icon tile, which is what stops a wall of apps
-turning into a patchwork.
+arrays; it takes that section's colour with it. Section tints come from the
+short `TINTS` palette at the top of the file, and colour only ever appears
+inside the icon tile — never on the label or the background.
 
 Drawings live in [`public/js/icons.js`](public/js/icons.js). Two rules when
 adding one: draw it in a 24×24 box at stroke weight 1.7, and make sure it
@@ -67,7 +73,7 @@ the two falling games are drawn from different angles.
 This session's network blocked `*.vercel.app`, `*.workers.dev`, `github.io`
 and `stuntlisting.com`, so no link below was opened — they came from the
 Vercel and GitHub APIs, from each repo's own README, and from URL patterns
-found in the Stunt Flashcards and Hair Selfie source. The five below are
+found in the Stunt Flashcards and Hair Selfie source. The six below are
 flagged in the app with an amber dot:
 
 | App | URL | Why |
@@ -76,6 +82,7 @@ flagged in the app with an amber dot:
 | **Membership** | `stuntlisting.com/membership` | Guessed. Nothing in any repo names the real membership page. |
 | **Stunt Jobs** | `stuntlisting.com/jobs` | Guessed, same reason. |
 | **Profile** | `stuntlisting.com/performer_dashboard` | Profiles live at `stuntlisting.com/<username>`, so no single URL works for everyone. Falls back to the dashboard. |
+| **Post a Job** | `stuntlisting.com/post-a-job` | Guessed, same reason. |
 | **Quick Headshot** | `sms:+18312788687` | Not a web app — the tile opens a text message to the headshot line. Swap the `url` for a real page when one exists. |
 
 A few others aren't the obvious guess and are worth a glance: Action Vault is
@@ -154,8 +161,8 @@ Notes for whoever edits this next:
   what a screen reader reads out. Drop it and searching "overtime" stops
   finding the Rate Calculator.
 - **The grid's 78px minimum column is deliberate** — it's the widest column
-  that still fits four across a small phone. Most sections hold four apps, so
-  anything wider strands the fourth on a row of its own.
+  that still fits four across a small phone, which is what makes the
+  four-per-section rule land as exactly one row.
 - **Settings only hides apps.** It used to also take a StuntListing username
   to build the Profile link; that's an account setting that belongs on
   StuntListing itself, so it's gone. Preferences are per-device, in

@@ -45,13 +45,15 @@ function flashSaved() {
 
 /* ── Tiles ──────────────────────────────────────────────────────── */
 
-function tileFor(app) {
+function tileFor(app, tint) {
   const note = app.note || '';
 
   /* Settings is a view, not a destination, so it's a button not a link. */
   const el = document.createElement(app.action ? 'button' : 'a');
   el.className = 'tile';
-  el.style.setProperty('--tint', TINTS[app.tint] || TINTS.slate);
+  /* The colour comes from the section, so a whole row reads as one group and
+     only the shape of the drawing tells the apps apart. */
+  el.style.setProperty('--tint', TINTS[tint] || TINTS.slate);
 
   if (app.action) {
     el.type = 'button';
@@ -91,7 +93,7 @@ function renderBoard() {
 
     const grid = document.createElement('div');
     grid.className = 'grid';
-    visible.forEach((app) => grid.append(tileFor(app)));
+    visible.forEach((app) => grid.append(tileFor(app, section.tint)));
     wrap.append(grid);
     board.append(wrap);
   });

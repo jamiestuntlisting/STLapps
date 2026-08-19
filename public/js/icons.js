@@ -104,6 +104,13 @@ const GLYPHS = {
     <path d="M3 12.6h18"/>
     <path d="M10.6 12.6v1.7h2.8v-1.7"/>`,
 
+  /* The same briefcase as Stunt Jobs, but with a plus — one is looking for
+     work, the other is putting work out. */
+  postjob: `
+    <rect x="3" y="7.4" width="18" height="12" rx="2.2"/>
+    <path d="M9 7.4V5.8a1.6 1.6 0 0 1 1.6-1.6h2.8A1.6 1.6 0 0 1 15 5.8v1.6"/>
+    <path d="M12 11.3v4.6M9.7 13.6h4.6"/>`,
+
   /* One head, framed by viewfinder corners — a headshot being taken, as
      against the ID card (Profile) and the four-up grid (Hair Selfie). */
   headshot: `
