@@ -31,17 +31,9 @@ export const TINTS = {
 
 export const SECTIONS = [
   {
-    id: 'you',
-    label: 'You',
+    id: 'performer',
+    label: 'Performer',
     apps: [
-      {
-        id: 'performer-dashboard',
-        name: 'Dashboard',
-        blurb: 'Your home on StuntListing — work, messages, everything.',
-        url: 'https://www.stuntlisting.com/performer_dashboard',
-        glyph: 'dashboard',
-        tint: 'orange',
-      },
       {
         id: 'profile',
         name: 'Profile',
@@ -52,6 +44,14 @@ export const SECTIONS = [
         note: 'Profiles live at stuntlisting.com/<username>, so there is no one URL for everyone — this goes to the dashboard.',
       },
       {
+        id: 'performer-dashboard',
+        name: 'Dashboard',
+        blurb: 'Your home on StuntListing — work, messages, everything.',
+        url: 'https://www.stuntlisting.com/performer_dashboard',
+        glyph: 'dashboard',
+        tint: 'orange',
+      },
+      {
         id: 'membership',
         name: 'Membership',
         blurb: 'Your plan — what you have bought, and what runs out when.',
@@ -60,6 +60,21 @@ export const SECTIONS = [
         tint: 'green',
         note: 'Guessed URL — swap it for the real membership page.',
       },
+      {
+        id: 'settings',
+        name: 'Settings',
+        blurb: 'Hide the apps you never open.',
+        url: '#settings',
+        glyph: 'gear',
+        tint: 'slate',
+        action: 'settings',
+      },
+    ],
+  },
+  {
+    id: 'coordinating',
+    label: 'Coordinating',
+    apps: [
       {
         id: 'search',
         name: 'Search',
@@ -84,29 +99,12 @@ export const SECTIONS = [
         glyph: 'lists',
         tint: 'teal',
       },
-      {
-        id: 'settings',
-        name: 'Settings',
-        blurb: 'Hide the apps you never open.',
-        url: '#settings',
-        glyph: 'gear',
-        tint: 'slate',
-        action: 'settings',
-      },
     ],
   },
   {
     id: 'getting-hired',
     label: 'Getting Hired',
     apps: [
-      {
-        id: 'store',
-        name: 'Store',
-        blurb: 'StuntListing merch and the Atlas Action course.',
-        url: 'https://stuntlisting.myshopify.com',
-        glyph: 'store',
-        tint: 'orange',
-      },
       {
         id: 'stunt-breakdown',
         name: 'The Stunt Breakdown',
@@ -269,6 +267,20 @@ export const SECTIONS = [
         url: 'https://coordinator-please.vercel.app',
         glyph: 'megaphone',
         tint: 'green',
+      },
+    ],
+  },
+  {
+    id: 'ect',
+    label: 'Ect',
+    apps: [
+      {
+        id: 'store',
+        name: 'Store',
+        blurb: 'StuntListing merch and the Atlas Action course.',
+        url: 'https://stuntlisting.myshopify.com',
+        glyph: 'store',
+        tint: 'orange',
       },
     ],
   },

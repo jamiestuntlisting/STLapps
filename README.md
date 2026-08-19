@@ -1,8 +1,8 @@
 # StuntListing Apps
 
 One launcher for everything we've built. Twenty-five apps on a single screen of
-icons, sorted into what you'd actually be doing — your account, getting hired,
-the working day, training, the arcade.
+icons, grouped by what you're actually doing — your own account, coordinating
+a show, getting hired, the working day, training, the arcade.
 
 It's a home screen, but not a phone's: the tiles are matte plates with a
 tinted line drawing rather than glossy squircles, and they sit under titled
@@ -17,11 +17,18 @@ Search from the top rail or press `/`. Settings hides the apps you never open.
 
 | Section | Apps |
 | --- | --- |
-| **You** | Dashboard · Profile · Membership · Search · Advanced Search · Lists · Settings |
-| **Getting Hired** | Store · The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
+| **Performer** | Profile · Dashboard · Membership · Settings |
+| **Coordinating** | Search · Advanced Search · Lists |
+| **Getting Hired** | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
 | **On Set** | Rate Calculator · SAG Contract Helper · Selfwrap · Stunt People Flashcards |
 | **Learn** | Action Vault · Atlas Action · Gym Map · Stunt News |
 | **Play** | All Games · Pro High Faller · Pro Stair Faller · Pro Fire Burner · Coordinator Please |
+| **Ect** | Store |
+
+The two sides of the job get their own groups: **Performer** is your own
+account, **Coordinating** is the tools you reach for when you're the one
+hiring. "Ect" is spelled the way it was asked for; it's `label: 'Ect'` in
+`apps.js` if it should ever become "Etc."
 
 Stunt School came off — it's the same thing as the arcade. The individual game
 links are kept only for the three that still stand up; everything else goes
