@@ -243,13 +243,6 @@ export const SECTIONS = [
         glyph: 'gamepad',
       },
       {
-        id: 'coordinator-please',
-        name: 'Coordinator Please',
-        blurb: 'The coordinator game — run the day and keep everyone alive.',
-        url: 'https://coordinator-please.vercel.app',
-        glyph: 'megaphone',
-      },
-      {
         id: 'stunt-news',
         name: 'Stunt News',
         blurb: 'Build the newsletter — compose, preview, export the HTML.',

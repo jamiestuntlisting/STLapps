@@ -12,6 +12,10 @@
  *
  * Adding one: draw it in a 24×24 box, keep the stroke on 1.7 to match, and
  * name it in the `glyph` field in apps.js.
+ *
+ * This is a library, not a mirror of the board: a few drawings here belong to
+ * apps that aren't currently tiled (the individual arcade games, the
+ * coordinator game) and are kept so those can come back without redrawing.
  */
 
 const GLYPHS = {

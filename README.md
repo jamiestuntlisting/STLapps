@@ -1,6 +1,6 @@
 # StuntListing Apps
 
-One launcher for everything we've built. Twenty-four apps on a single screen of
+One launcher for everything we've built. Twenty-three apps on a single screen of
 icons, grouped by what you're actually doing — your own account, coordinating
 a show, getting hired, the working day, and training. Each group is one row,
 in one colour.
@@ -23,7 +23,7 @@ Search from the top rail or press `/`. Settings hides the apps you never open.
 | **Getting Hired** | amber | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
 | **On Set** | green | Call Time · Rate Calculator · SAG Contract Helper · Selfwrap |
 | **Learn** | violet | Action Vault · Atlas Action · Gym Map · Stunt People Flashcards |
-| **Etc** | teal | Store · All Games · Coordinator Please · Stunt News |
+| **Etc** | teal | Store · All Games · Stunt News |
 
 Two rules hold the layout together, and both are worth keeping:
 
@@ -34,12 +34,12 @@ Two rules hold the layout together, and both are worth keeping:
   and it's the shape of the drawing that tells the apps apart. There is no
   per-app `tint` field, so the rule can't be broken by accident.
 
-The four-per-row cap does real work. It's why the arcade collapsed to a
-single **All Games** tile — Pro High Faller, Pro Stair Faller and Pro Fire
-Burner are reached through it rather than having tiles of their own — and why
-adding Call Time to On Set pushed Stunt People Flashcards to Learn (it is a
-learning tool) and Stunt News to Etc (it's a newsletter builder more than a
-thing you read). Adding a fifth tile anywhere means moving one out.
+Every game goes through the single **All Games** tile — Pro High Faller, Pro
+Stair Faller, Pro Fire Burner and Coordinator Please have no tiles of their
+own. That also keeps the rows honest: the four-per-row cap is why adding Call
+Time to On Set pushed Stunt People Flashcards to Learn (it is a learning tool)
+and Stunt News to Etc (it's a newsletter builder more than a thing you read).
+Adding a fifth tile anywhere means moving one out.
 
 ## Changing what's on it
 
