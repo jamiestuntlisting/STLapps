@@ -33,8 +33,8 @@ export const TINTS = {
 
 export const SECTIONS = [
   {
-    id: 'performer',
-    label: 'Performer',
+    id: 'perform',
+    label: 'Perform',
     tint: 'orange',
     apps: [
       {
@@ -70,8 +70,8 @@ export const SECTIONS = [
     ],
   },
   {
-    id: 'coordinating',
-    label: 'Coordinating',
+    id: 'coordinate',
+    label: 'Coordinate',
     tint: 'blue',
     apps: [
       {
@@ -144,8 +144,8 @@ export const SECTIONS = [
     ],
   },
   {
-    id: 'on-set',
-    label: 'On Set',
+    id: 'set',
+    label: 'Set',
     tint: 'green',
     apps: [
       {

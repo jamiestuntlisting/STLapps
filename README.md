@@ -18,10 +18,10 @@ Search from the top rail or press `/`. Settings hides the apps you never open.
 
 | Section | | Apps |
 | --- | --- | --- |
-| **Performer** | orange | Profile · Dashboard · Membership · Settings |
-| **Coordinating** | blue | Search · Advanced Search · Lists · Post a Job |
+| **Perform** | orange | Profile · Dashboard · Membership · Settings |
+| **Coordinate** | blue | Search · Advanced Search · Lists · Post a Job |
 | **Getting Hired** | amber | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
-| **On Set** | green | Call Time · Rate Calculator · SAG Contract Helper · Selfwrap |
+| **Set** | green | Call Time · Rate Calculator · SAG Contract Helper · Selfwrap |
 | **Learn** | violet | Action Vault · Atlas Action · Gym Map · Stunt People Flashcards |
 | **Etc** | teal | Store · All Games · Stunt News |
 
@@ -34,7 +34,7 @@ Two rules hold the layout together, and both are worth keeping:
   and it's the shape of the drawing that tells the apps apart. There is no
   per-app `tint` field, so the rule can't be broken by accident.
 
-The cap does real work: it's why adding Call Time to On Set pushed Stunt
+The cap does real work: it's why adding Call Time to Set pushed Stunt
 People Flashcards to Learn (it is a learning tool) and Stunt News to Etc (it's
 a newsletter builder more than a thing you read). Adding a fifth tile anywhere
 means moving one out.
