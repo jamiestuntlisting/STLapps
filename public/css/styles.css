@@ -2,10 +2,18 @@
  * StuntListing Apps.
  *
  * The look is borrowed from the paperwork and hardware around a set: matte
- * black, hairline rules, and monospaced labels of the kind that run down a
- * call sheet. Colour is rationed — it appears only inside the small icon
- * tiles, never on a card, so twenty-two apps read as one calm board rather
- * than a patchwork of coloured squares.
+ * black, grain, hairline rules, and monospaced labels of the kind that run
+ * down a call sheet.
+ *
+ * Colour is organised by row. Each section owns one tint, and it runs through
+ * that row's heading, its rule and its tiles — so the board reads as six
+ * bands rather than a patchwork, and the shape of each drawing is what tells
+ * the apps apart. Everything colour-related keys off `--tint`, which the
+ * section element sets; nothing hard-codes a hue.
+ *
+ * The tiles are lit from above: brightest at the top-left, a hairline of
+ * light along the top edge, a shadow beneath. That, plus the grain on the
+ * ground, is what stops a dark screen reading as flat.
  *
  * Committed to a single dark palette on purpose: this gets opened on set,
  * often at night. Every colour is painted explicitly so the page holds up
@@ -21,7 +29,8 @@
   --line-soft:  #1a1d23;
 
   /* Text — warm off-white against the cool ground, the way paper reads. */
-  --text:   #e8e6e3;
+  --text:   #edebe8;
+  --label:  #b9b5b0;   /* icon captions: warm, and a step brighter than muted */
   --muted:  #8a8f99;
   --faint:  #5d636e;
 
@@ -57,11 +66,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 
-  /* One soft light from the top left, so the board isn't a flat black field. */
+  /* Two soft lights, and a film of grain over the top. The grain is the
+     thing doing the work: a flat dark field reads as cheap, and a little
+     noise reads as a surface. It's an inline SVG so nothing is fetched. */
   background-image:
-    radial-gradient(70rem 40rem at 8% -10%, rgba(255, 90, 54, .10), transparent 60%),
-    radial-gradient(60rem 40rem at 100% 0%, rgba(76, 141, 246, .07), transparent 55%);
-  background-repeat: no-repeat;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E"),
+    radial-gradient(64rem 38rem at 6% -12%, rgba(255, 90, 54, .16), transparent 62%),
+    radial-gradient(56rem 40rem at 104% -4%, rgba(76, 141, 246, .11), transparent 58%),
+    radial-gradient(50rem 40rem at 50% 108%, rgba(63, 182, 168, .06), transparent 60%);
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 160px 160px, auto, auto, auto;
+  /* Deliberately not `background-attachment: fixed`. iOS Safari treats fixed
+     backgrounds unreliably and it costs scroll performance on a phone; the
+     grain tiles at 160px, so letting it scroll is invisible anyway. */
 }
 
 .skip {
@@ -189,6 +206,10 @@ main {
   gap: clamp(28px, 4vw, 40px);
 }
 
+.section {
+  --tint: var(--muted);
+}
+
 .section-head {
   display: flex;
   align-items: baseline;
@@ -203,15 +224,22 @@ main {
   font: 500 11px/1 var(--mono);
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--muted);
+  /* The heading wears its row's colour, dimmed — it names the group and
+     colour-codes it in the same stroke. */
+  color: color-mix(in srgb, var(--tint) 60%, var(--muted));
   flex: none;
 }
 
+/* The rule starts in the row's colour and fades out, rather than ruling the
+   whole width in flat grey. */
 .section-head::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--line-soft);
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--tint) 34%, transparent),
+    color-mix(in srgb, var(--line) 90%, transparent) 22%,
+    transparent 88%);
 }
 
 /* 78px is chosen, not arbitrary: it's the widest column that still fits four
@@ -225,6 +253,18 @@ main {
 
 @media (min-width: 700px) {
   .grid { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
+}
+
+/* Rows fade up in sequence on first paint — a quarter-second of order, then
+   it's over. Only ever runs once; see renderBoard. */
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.board.is-entering .section {
+  animation: row-in .45s var(--ease) backwards;
+  animation-delay: calc(var(--row, 0) * 60ms);
 }
 
 /* ── An app tile ────────────────────────────────────────────────── */
@@ -258,11 +298,20 @@ main {
   /* 26% — a softer, squarer corner than the phone's superellipse. */
   border-radius: 16px;
   color: var(--tint);
+  /* Lit from above: the plate is brightest at the top-left corner and falls
+     away, with a hairline of light along the top edge and a shadow beneath.
+     That's what makes it read as an object rather than a coloured rectangle. */
   background:
+    radial-gradient(120% 100% at 22% 0%,
+      color-mix(in srgb, var(--tint) 30%, transparent),
+      transparent 70%),
     linear-gradient(180deg,
-      color-mix(in srgb, var(--tint) 20%, transparent),
-      color-mix(in srgb, var(--tint) 11%, transparent));
-  border: 1px solid color-mix(in srgb, var(--tint) 34%, transparent);
+      color-mix(in srgb, var(--tint) 17%, transparent),
+      color-mix(in srgb, var(--tint) 7%, transparent));
+  border: 1px solid color-mix(in srgb, var(--tint) 30%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--tint) 38%, transparent),
+    0 3px 12px -6px rgba(0, 0, 0, .85);
   transition:
     transform .2s var(--ease),
     border-color .2s var(--ease),
@@ -272,8 +321,11 @@ main {
 .tile:hover .tile-icon,
 .tile:focus-visible .tile-icon {
   transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--tint) 68%, transparent);
-  box-shadow: 0 8px 22px -8px color-mix(in srgb, var(--tint) 70%, transparent);
+  border-color: color-mix(in srgb, var(--tint) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--tint) 55%, transparent),
+    0 10px 26px -10px color-mix(in srgb, var(--tint) 78%, transparent),
+    0 4px 12px -8px rgba(0, 0, 0, .9);
 }
 
 .tile:active .tile-icon { transform: translateY(-1px); }
@@ -284,7 +336,13 @@ main {
   box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px color-mix(in srgb, var(--tint) 75%, transparent);
 }
 
-.glyph { width: 30px; height: 30px; }
+/* A whisper of the tint bleeding off the drawing, so the glyph sits in the
+   plate's light rather than on top of it. */
+.glyph {
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tint) 35%, transparent));
+}
 
 .tile-name {
   max-width: 100%;
@@ -292,7 +350,7 @@ main {
   line-height: 1.3;
   font-weight: 480;
   text-align: center;
-  color: var(--muted);
+  color: var(--label);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -467,6 +525,7 @@ main {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
     transition-duration: .01ms !important;
   }
   .tile:hover .tile-icon, .tile:focus-visible .tile-icon { transform: none; }

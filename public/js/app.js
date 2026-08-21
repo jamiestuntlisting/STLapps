@@ -74,17 +74,27 @@ function tileFor(app, tint) {
   return el;
 }
 
+/* The rows fade up once, on the first paint. Re-rendering after a settings
+   change skips it — watching the whole board re-animate because you ticked a
+   checkbox is worse than no animation at all. */
+let firstPaint = true;
+
 function renderBoard() {
   const board = $('#apps');
   board.innerHTML = '';
+  board.classList.toggle('is-entering', firstPaint);
+  firstPaint = false;
 
-  SECTIONS.forEach((section) => {
+  SECTIONS.forEach((section, index) => {
     const visible = section.apps.filter((app) => !prefs.hidden.includes(app.id));
     if (!visible.length) return;
 
     const wrap = document.createElement('section');
     wrap.className = 'section';
     wrap.dataset.section = section.id;
+    /* The row's colour, used by its heading and rule as well as its tiles. */
+    wrap.style.setProperty('--tint', TINTS[section.tint] || TINTS.slate);
+    wrap.style.setProperty('--row', String(index));
 
     wrap.innerHTML = `
       <div class="section-head">
