@@ -23,7 +23,7 @@ Search from the top rail or press `/`. Settings hides the apps you never open.
 | **Getting Hired** | amber | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
 | **On Set** | green | Call Time · Rate Calculator · SAG Contract Helper · Selfwrap |
 | **Learn** | violet | Action Vault · Atlas Action · Gym Map · Stunt People Flashcards |
-| **Etc** | teal | Store · All Games · Stunt News |
+| **Etc** | teal | Store · Stunt School · Stunt News |
 
 Two rules hold the layout together, and both are worth keeping:
 
@@ -72,21 +72,50 @@ the two falling games are drawn from different angles.
 
 ## Links worth confirming
 
-This session's network blocked `*.vercel.app`, `*.workers.dev`, `github.io`
-and `stuntlisting.com`, so no link below was opened — they came from the
-Vercel and GitHub APIs, from each repo's own README, and from URL patterns
-found in the Stunt Flashcards and Hair Selfie source. The seven below are
-flagged in the app with an amber dot:
+Most links have now been opened and confirmed working (200 OK, correct page)
+by fetching them through Vercel's own network, which reaches what this
+session's egress proxy blocks. What could **not** be reached from here at all:
+`*.workers.dev`, `stuntlisting.com`, `atlasaction.com` and the Shopify store.
+
+Confirmed live, with the page title each one actually serves:
+
+| App | Serves |
+| --- | --- |
+| Rate Calculator | StuntListing Bookkeeper (redirects to `/login`) |
+| SAG Contract Helper | StuntListing Contract Guide |
+| Selfwrap | Exhibit G Time Logger |
+| The Stunt Breakdown | The Stunt Breakdown |
+| Advanced Search | xStunts — Stunt Performer Search |
+| Action Vault | Action Vault |
+| Gym Map | Stunt Training & Specialty Facilities — World Map |
+| Stunt News | Stunt News — Newsletter Generator |
+| Stunt School | **Virtual Stunt School** — see below |
+
+**The `stlg-arcade` deployment is not an arcade.** It serves the Virtual Stunt
+School. The tile used to say "All Games" and open a stunt school, so it's now
+labelled Stunt School. The four games are alive at their own URLs and are
+currently not on the board at all:
+
+| Game | Serves |
+| --- | --- |
+| `pro-high-faller` | StuntListing's Pro Stunt High Faller |
+| `pro-stair-faller` | Pro Stair Faller |
+| `pro-fire-burner` | Fire Burn Simulator |
+| `coordinator-please` | Coordinator Please |
+
+Still unverified, and flagged in the app with an amber dot:
 
 | App | URL | Why |
 | --- | --- | --- |
-| **Rate Calculator** | `rate-calculator-v3.vercel.app` | The repo is mid-migration from Vercel to Cloudflare Workers. Its last three Vercel production deploys failed and the project no longer carries that clean alias — this is the URL the repo itself advertises. If it's on a Worker now, point it there. |
-| **Membership** | `stuntlisting.com/membership` | Guessed. Nothing in any repo names the real membership page. |
-| **Stunt Jobs** | `stuntlisting.com/jobs` | Guessed, same reason. |
-| **Profile** | `stuntlisting.com/performer_dashboard` | Profiles live at `stuntlisting.com/<username>`, so no single URL works for everyone. Falls back to the dashboard. |
-| **Post a Job** | `stuntlisting.com/post-a-job` | Guessed, same reason. |
-| **Call Time** | `stuntlisting.com/call-time` | A call time alarm doesn't exist yet — nothing in any of the repos is one. The tile is a placeholder so the row is ready for it. |
-| **Quick Headshot** | `sms:+18312788687` | Not a web app — the tile opens a text message to the headshot line. Swap the `url` for a real page when one exists. |
+| **Membership** | `stuntlisting.com/membership` | Guessed. No page by that name turned up. |
+| **Post a Job** | `stuntlisting.com/post-a-job` | Guessed. Posting may live inside `/job_postings`. |
+| **Call Time** | `stuntlisting.com/call-time` | A call time alarm doesn't exist yet — nothing in any repo is one. Placeholder. |
+| **Quick Headshot** | `sms:+18312788687` | Not a web app — opens a text message. Swap the `url` when a page exists. |
+| **Rate Calculator** | `rate-calculator-v3.vercel.app` | It loads, but the repo is mid-migration to Cloudflare Workers and its last three Vercel deploys failed. Working today; confirm where it should live. |
+
+Confirmed by search rather than by fetching: `/edit_profile` is the real
+profile page and `/job_postings` the real job board, so those two tiles are no
+longer guesses.
 
 A few others aren't the obvious guess and are worth a glance: Action Vault is
 `action-vault-blond`, Gym Map is `gymmap-iota`, The Stunt Breakdown points at

@@ -41,9 +41,8 @@ export const SECTIONS = [
         id: 'profile',
         name: 'Profile',
         blurb: 'Your public page — reels, skills, sizes, availability.',
-        url: 'https://www.stuntlisting.com/performer_dashboard',
+        url: 'https://www.stuntlisting.com/edit_profile',
         glyph: 'profile',
-        note: 'Profiles live at stuntlisting.com/<username>, so there is no one URL for everyone — this goes to the dashboard.',
       },
       {
         id: 'performer-dashboard',
@@ -122,9 +121,8 @@ export const SECTIONS = [
         id: 'stunt-jobs',
         name: 'Stunt Jobs',
         blurb: 'Open calls and jobs going out now.',
-        url: 'https://www.stuntlisting.com/jobs',
+        url: 'https://www.stuntlisting.com/job_postings',
         glyph: 'jobs',
-        note: 'Guessed URL — swap it for the real jobs page.',
       },
       {
         id: 'hair-selfie',
@@ -234,13 +232,14 @@ export const SECTIONS = [
         glyph: 'store',
       },
       {
-        /* The arcade is the front door. The individual games below are the
-           ones confirmed to still stand up on their own. */
+        /* Named for the repo it came from, but the deployment at this URL
+           serves the Virtual Stunt School — not an arcade. Verified by
+           fetching it. Don't rename this back without checking the page. */
         id: 'stlg-arcade',
-        name: 'All Games',
-        blurb: 'The whole arcade cabinet — every StuntListing game.',
+        name: 'Stunt School',
+        blurb: 'The virtual stunt school — lessons and school analytics.',
         url: 'https://stlg-arcade.vercel.app',
-        glyph: 'gamepad',
+        glyph: 'school',
       },
       {
         id: 'stunt-news',
