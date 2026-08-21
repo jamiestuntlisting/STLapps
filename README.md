@@ -23,7 +23,7 @@ Search from the top rail or press `/`. Settings hides the apps you never open.
 | **Getting Hired** | amber | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
 | **On Set** | green | Call Time · Rate Calculator · SAG Contract Helper · Selfwrap |
 | **Learn** | violet | Action Vault · Atlas Action · Gym Map · Stunt People Flashcards |
-| **Etc** | teal | Store · Stunt School · Stunt News |
+| **Etc** | teal | Store · All Games · Stunt News |
 
 Two rules hold the layout together, and both are worth keeping:
 
@@ -39,10 +39,9 @@ People Flashcards to Learn (it is a learning tool) and Stunt News to Etc (it's
 a newsletter builder more than a thing you read). Adding a fifth tile anywhere
 means moving one out.
 
-**No games are on the board.** They were dropped on the assumption that an
-"All Games" tile reached them; that tile turned out to serve the Virtual Stunt
-School instead. All four games are live — see below — and want a row of their
-own if they should be one tap away.
+Every game goes through the single **All Games** tile. Pro High Faller, Pro
+Stair Faller, Pro Fire Burner and Coordinator Please have no tiles of their
+own, which is what keeps Etc to one row.
 
 ## Changing what's on it
 
@@ -92,12 +91,17 @@ Confirmed live, with the page title each one actually serves:
 | Action Vault | Action Vault |
 | Gym Map | Stunt Training & Specialty Facilities — World Map |
 | Stunt News | Stunt News — Newsletter Generator |
-| Stunt School | **Virtual Stunt School** — see below |
+| All Games | branded "Virtual Stunt School" — see below |
 
-**The `stlg-arcade` deployment is not an arcade.** It serves the Virtual Stunt
-School. The tile used to say "All Games" and open a stunt school, so it's now
-labelled Stunt School. The four games are alive at their own URLs and are
-currently not on the board at all:
+**The All Games tile is branded "Virtual Stunt School".** Its page `<title>`
+and its Expo manifest both say so — the app's slug is `stunt-school-native` —
+but it *is* the game launcher. The page is a JavaScript shell, so the title
+says nothing about what it renders; the bundle carries the games and their
+high scores and contains no lessons or courses. Don't relabel that tile on
+the strength of the title.
+
+The individual games are also live at their own URLs, reached through the
+launcher rather than having tiles:
 
 | Game | Serves |
 | --- | --- |

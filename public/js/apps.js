@@ -232,14 +232,17 @@ export const SECTIONS = [
         glyph: 'store',
       },
       {
-        /* Named for the repo it came from, but the deployment at this URL
-           serves the Virtual Stunt School — not an arcade. Verified by
-           fetching it. Don't rename this back without checking the page. */
+        /* Heads up if you go looking: this deployment is branded "Virtual
+           Stunt School" — that's the Expo app name in its manifest, and it's
+           the <title> the page serves. It is nonetheless the game launcher.
+           The bundle carries the games and their high scores and no lessons
+           or courses at all. Don't "correct" this tile on the strength of
+           the page title. */
         id: 'stlg-arcade',
-        name: 'Stunt School',
-        blurb: 'The virtual stunt school — lessons and school analytics.',
+        name: 'All Games',
+        blurb: 'The game launcher — every StuntListing game in one place.',
         url: 'https://stlg-arcade.vercel.app',
-        glyph: 'school',
+        glyph: 'gamepad',
       },
       {
         id: 'stunt-news',
