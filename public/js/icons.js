@@ -78,6 +78,15 @@ const GLYPHS = {
     <path d="M12 9.6v3.8l2.6 1.6"/>
     <path d="m18.6 6.6 1.5 1.5"/>`,
 
+  /* An alarm clock — bells on its shoulders and legs underneath, so it can't
+     be taken for the plain stopwatch that Selfwrap uses. */
+  alarm: `
+    <circle cx="12" cy="13.4" r="7.2"/>
+    <path d="M12 9.8v3.6l2.4 1.4"/>
+    <path d="M6.6 5.4A3.4 3.4 0 0 0 2.7 8.6"/>
+    <path d="M17.4 5.4a3.4 3.4 0 0 1 3.9 3.2"/>
+    <path d="m7.5 20.2-1.5 1.9M16.5 20.2l1.5 1.9"/>`,
+
   /* A clapperboard. */
   slate: `
     <path d="M3.5 9.2 20 6.4v10.9a1.6 1.6 0 0 1-1.6 1.6H5.1a1.6 1.6 0 0 1-1.6-1.6Z"/>

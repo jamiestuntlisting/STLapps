@@ -151,6 +151,16 @@ export const SECTIONS = [
     tint: 'green',
     apps: [
       {
+        id: 'call-time',
+        name: 'Call Time',
+        /* Nothing in the repos is a call time alarm yet, so this is a
+           placeholder tile. Point it at the real thing once it exists. */
+        blurb: 'Set an alarm for tomorrow\'s call.',
+        url: 'https://www.stuntlisting.com/call-time',
+        glyph: 'alarm',
+        note: 'No call time alarm has been built yet — guessed URL, placeholder for now.',
+      },
+      {
         id: 'rate-calculator',
         name: 'Rate Calculator',
         blurb: 'Work out a day rate — overtime, adjustments, meal penalties.',
@@ -173,13 +183,6 @@ export const SECTIONS = [
         blurb: 'Log your own hours as the day runs.',
         url: 'https://selfwrap.vercel.app',
         glyph: 'stopwatch',
-      },
-      {
-        id: 'stunt-flashcards',
-        name: 'Stunt People Flashcards',
-        blurb: 'Paste a list and learn everyone on it — faces and skills.',
-        url: 'https://stunt-flashcards.jamie-181.workers.dev',
-        glyph: 'flashcards',
       },
     ],
   },
@@ -210,11 +213,11 @@ export const SECTIONS = [
         glyph: 'gympin',
       },
       {
-        id: 'stunt-news',
-        name: 'Stunt News',
-        blurb: 'Build the newsletter — compose, preview, export the HTML.',
-        url: 'https://stunt-news.vercel.app',
-        glyph: 'news',
+        id: 'stunt-flashcards',
+        name: 'Stunt People Flashcards',
+        blurb: 'Paste a list and learn everyone on it — faces and skills.',
+        url: 'https://stunt-flashcards.jamie-181.workers.dev',
+        glyph: 'flashcards',
       },
     ],
   },
@@ -245,6 +248,13 @@ export const SECTIONS = [
         blurb: 'The coordinator game — run the day and keep everyone alive.',
         url: 'https://coordinator-please.vercel.app',
         glyph: 'megaphone',
+      },
+      {
+        id: 'stunt-news',
+        name: 'Stunt News',
+        blurb: 'Build the newsletter — compose, preview, export the HTML.',
+        url: 'https://stunt-news.vercel.app',
+        glyph: 'news',
       },
     ],
   },

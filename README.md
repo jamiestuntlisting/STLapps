@@ -1,6 +1,6 @@
 # StuntListing Apps
 
-One launcher for everything we've built. Twenty-three apps on a single screen of
+One launcher for everything we've built. Twenty-four apps on a single screen of
 icons, grouped by what you're actually doing — your own account, coordinating
 a show, getting hired, the working day, and training. Each group is one row,
 in one colour.
@@ -21,9 +21,9 @@ Search from the top rail or press `/`. Settings hides the apps you never open.
 | **Performer** | orange | Profile · Dashboard · Membership · Settings |
 | **Coordinating** | blue | Search · Advanced Search · Lists · Post a Job |
 | **Getting Hired** | amber | The Stunt Breakdown · Stunt Jobs · Hair Selfie · Quick Headshot |
-| **On Set** | green | Rate Calculator · SAG Contract Helper · Selfwrap · Stunt People Flashcards |
-| **Learn** | violet | Action Vault · Atlas Action · Gym Map · Stunt News |
-| **Etc** | teal | Store · All Games · Coordinator Please |
+| **On Set** | green | Call Time · Rate Calculator · SAG Contract Helper · Selfwrap |
+| **Learn** | violet | Action Vault · Atlas Action · Gym Map · Stunt People Flashcards |
+| **Etc** | teal | Store · All Games · Coordinator Please · Stunt News |
 
 Two rules hold the layout together, and both are worth keeping:
 
@@ -34,10 +34,12 @@ Two rules hold the layout together, and both are worth keeping:
   and it's the shape of the drawing that tells the apps apart. There is no
   per-app `tint` field, so the rule can't be broken by accident.
 
-The four-per-row cap is why the arcade collapsed to a single **All Games**
-tile: Pro High Faller, Pro Stair Faller and Pro Fire Burner no longer have
-tiles of their own and are reached through it. Add them back as their own
-section if you'd rather have them one tap away.
+The four-per-row cap does real work. It's why the arcade collapsed to a
+single **All Games** tile — Pro High Faller, Pro Stair Faller and Pro Fire
+Burner are reached through it rather than having tiles of their own — and why
+adding Call Time to On Set pushed Stunt People Flashcards to Learn (it is a
+learning tool) and Stunt News to Etc (it's a newsletter builder more than a
+thing you read). Adding a fifth tile anywhere means moving one out.
 
 ## Changing what's on it
 
@@ -73,7 +75,7 @@ the two falling games are drawn from different angles.
 This session's network blocked `*.vercel.app`, `*.workers.dev`, `github.io`
 and `stuntlisting.com`, so no link below was opened — they came from the
 Vercel and GitHub APIs, from each repo's own README, and from URL patterns
-found in the Stunt Flashcards and Hair Selfie source. The six below are
+found in the Stunt Flashcards and Hair Selfie source. The seven below are
 flagged in the app with an amber dot:
 
 | App | URL | Why |
@@ -83,6 +85,7 @@ flagged in the app with an amber dot:
 | **Stunt Jobs** | `stuntlisting.com/jobs` | Guessed, same reason. |
 | **Profile** | `stuntlisting.com/performer_dashboard` | Profiles live at `stuntlisting.com/<username>`, so no single URL works for everyone. Falls back to the dashboard. |
 | **Post a Job** | `stuntlisting.com/post-a-job` | Guessed, same reason. |
+| **Call Time** | `stuntlisting.com/call-time` | A call time alarm doesn't exist yet — nothing in any of the repos is one. The tile is a placeholder so the row is ready for it. |
 | **Quick Headshot** | `sms:+18312788687` | Not a web app — the tile opens a text message to the headshot line. Swap the `url` for a real page when one exists. |
 
 A few others aren't the obvious guess and are worth a glance: Action Vault is
