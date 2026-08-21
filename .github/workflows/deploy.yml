@@ -1,13 +1,17 @@
 name: Deploy to Cloudflare Workers
 
-# Deploys the static home screen on every push to the main development branch.
+# Deploys the static launcher on every push to a development branch.
+#
 # Needs two repository secrets (Settings → Secrets and variables → Actions):
 #   CLOUDFLARE_API_TOKEN   — token with the "Edit Cloudflare Workers" template
 #   CLOUDFLARE_ACCOUNT_ID  — from the Workers overview page in the dashboard
+#
+# Until those exist the job skips with a notice rather than failing. A wall of
+# red X's on every push trains you to ignore the one failure that matters.
 
 on:
   push:
-    branches: [claude/app-home-screen-grid-mb43mj, main]
+    branches: [main, claude/app-home-screen-grid-mb43mj]
   workflow_dispatch:
 
 jobs:
@@ -17,7 +21,22 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check for Cloudflare credentials
+        id: creds
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$ACCOUNT" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Deploy skipped::Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in Settings → Secrets and variables → Actions, then re-run this workflow."
+          fi
+
       - name: Deploy
+        if: steps.creds.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -25,3 +44,11 @@ jobs:
           # The action ships wrangler 3.x by default, which predates
           # assets-only Workers and fails with "Missing entry-point".
           wranglerVersion: '4.120.0'
+
+      - name: Report
+        run: |
+          if [ "${{ steps.creds.outputs.ready }}" = "true" ]; then
+            echo "Deployed. See the Worker's URL in the step above."
+          else
+            echo "No Cloudflare credentials set — nothing was deployed."
+          fi
