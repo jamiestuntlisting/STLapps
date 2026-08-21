@@ -34,12 +34,15 @@ Two rules hold the layout together, and both are worth keeping:
   and it's the shape of the drawing that tells the apps apart. There is no
   per-app `tint` field, so the rule can't be broken by accident.
 
-Every game goes through the single **All Games** tile — Pro High Faller, Pro
-Stair Faller, Pro Fire Burner and Coordinator Please have no tiles of their
-own. That also keeps the rows honest: the four-per-row cap is why adding Call
-Time to On Set pushed Stunt People Flashcards to Learn (it is a learning tool)
-and Stunt News to Etc (it's a newsletter builder more than a thing you read).
-Adding a fifth tile anywhere means moving one out.
+The cap does real work: it's why adding Call Time to On Set pushed Stunt
+People Flashcards to Learn (it is a learning tool) and Stunt News to Etc (it's
+a newsletter builder more than a thing you read). Adding a fifth tile anywhere
+means moving one out.
+
+**No games are on the board.** They were dropped on the assumption that an
+"All Games" tile reached them; that tile turned out to serve the Virtual Stunt
+School instead. All four games are live — see below — and want a row of their
+own if they should be one tap away.
 
 ## Changing what's on it
 
