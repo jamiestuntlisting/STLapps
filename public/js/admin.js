@@ -6,8 +6,9 @@
  * otherwise the built-in apps.js — edits a plain copy of that in memory, and
  * PUTs it back. Nothing is written until Publish is pressed.
  *
- * The password lives in this tab only (sessionStorage). It's the one thing
- * here that shouldn't outlive the window.
+ * There is no password: this page simply isn't linked from the board and is
+ * marked noindex. Anyone with the URL can publish, which is why every publish
+ * keeps the version it replaced — see the Undo button.
  */
 
 import { SECTIONS as BUILT_IN, TINTS } from './apps.js';
@@ -40,22 +41,15 @@ async function checkServer() {
   try {
     const response = await fetch('api/status');
     if (!response.ok) throw new Error('no api');
-    const { adminConfigured } = await response.json();
-    if (!adminConfigured) {
-      state.hidden = false;
-      state.className = 'server-state warn';
-      state.innerHTML = 'No admin password is set on the server, so <strong>Publish is '
-        + 'disabled</strong>. Set one once with <code>npx wrangler secret put ADMIN_PASSWORD</code>. '
-        + 'Until then you can still edit here and use <strong>Download apps.js</strong>.';
-      $('#auth-panel').hidden = true;
-    }
+    const { canUndo } = await response.json();
+    $('#undo').hidden = !canUndo;
   } catch {
     /* No Worker behind this page — running from a plain static server. */
     state.hidden = false;
     state.className = 'server-state warn';
     state.innerHTML = 'This page isn\'t being served by the Worker, so there\'s nothing to '
       + 'publish to. Edits here can still be saved with <strong>Download apps.js</strong>.';
-    $('#auth-panel').hidden = true;
+    $('#publish').disabled = true;
   }
 }
 
@@ -241,14 +235,7 @@ function uniqueId(base) {
 
 /* ── Publishing ─────────────────────────────────────────────────── */
 
-function password() {
-  return $('#password')?.value || sessionStorage.getItem('stlapps.admin') || '';
-}
-
 async function publish() {
-  const secret = password();
-  if (!secret) return toast('Enter the admin password first.', true);
-
   const button = $('#publish');
   button.disabled = true;
   button.textContent = 'Publishing…';
@@ -256,16 +243,13 @@ async function publish() {
   try {
     const response = await fetch('api/catalog', {
       method: 'PUT',
-      headers: {
-        'content-type': 'application/json',
-        authorization: `Bearer ${secret}`,
-      },
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ sections }),
     });
     const data = await response.json().catch(() => ({}));
 
     if (response.ok) {
-      try { sessionStorage.setItem('stlapps.admin', secret); } catch { /* fine */ }
+      if (data.canUndo) $('#undo').hidden = false;
       toast('Published. The board is updated for everyone.');
     } else {
       toast(data.error || `Publish failed (${response.status}).`, true);
@@ -280,22 +264,33 @@ async function publish() {
 
 async function revert() {
   if (!confirm('Delete the saved catalog, so the board falls back to the version built into apps.js?')) return;
-  const secret = password();
-  if (!secret) return toast('Enter the admin password first.', true);
 
   try {
-    const response = await fetch('api/catalog', {
-      method: 'DELETE',
-      headers: { authorization: `Bearer ${secret}` },
-    });
+    const response = await fetch('api/catalog', { method: 'DELETE' });
     const data = await response.json().catch(() => ({}));
     if (response.ok) {
       sections = structuredClone(BUILT_IN);
       render();
+      if (data.canUndo) $('#undo').hidden = false;
       toast('Reverted to the built-in catalog.');
     } else {
       toast(data.error || `Revert failed (${response.status}).`, true);
     }
+  } catch {
+    toast('Could not reach the server.', true);
+  }
+}
+
+/* Puts back whatever the last publish replaced. Undo toggles between the last
+   two versions, so pressing it twice returns you to where you started. */
+async function undoPublish() {
+  try {
+    const response = await fetch('api/undo', { method: 'POST' });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) return toast(data.error || `Undo failed (${response.status}).`, true);
+    await loadLive();
+    render();
+    toast('Put the previous version back.');
   } catch {
     toast('Could not reach the server.', true);
   }
@@ -377,10 +372,8 @@ async function start() {
   await loadLive();
   render();
 
-  const saved = sessionStorage.getItem('stlapps.admin');
-  if (saved && $('#password')) $('#password').value = saved;
-
   $('#publish').addEventListener('click', publish);
+  $('#undo').addEventListener('click', undoPublish);
   $('#revert').addEventListener('click', revert);
   $('#export').addEventListener('click', exportSource);
   $('#add-section').addEventListener('click', () => {

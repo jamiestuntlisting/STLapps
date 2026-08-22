@@ -45,22 +45,29 @@ own, which is what keeps Etc to one row.
 
 ## Changing what's on it
 
-**The easy way: `/admin`.** It isn't linked from the board and it's marked
-`noindex`, so you have to know it's there. It lists every row and every app
-with its name, link, description and icon, and lets you reorder within a row,
-move an app to another row, add and delete. **Publish** writes the catalog to
-KV and the board changes for everyone straight away — no redeploy.
+**The easy way: `/admin`.** It isn't linked from the board and is marked
+`noindex` — by meta tag and by response header — so you have to know the URL.
+It lists every row and every app with its name, link, description and icon,
+and lets you reorder within a row, move an app to another row, add and delete.
+**Publish** writes the catalog to KV and the board changes for everyone
+straight away — no redeploy.
 
-Publishing needs a password, set once:
+### Publishing is open, on purpose
 
-```bash
-npx wrangler secret put ADMIN_PASSWORD
-```
+There's no password. Anyone who knows the URL can change what every visitor
+sees. Two things stand in for a lock:
 
-Until that secret exists, saving is **refused by the server**, not merely
-hidden in the UI — an unauthenticated write endpoint would let anyone repoint
-every tile on the board. The admin page says so and falls back to
-**Download apps.js**, which writes the same catalog as a source file to commit.
+- **Undo.** Every publish records the state it replaced — including "nothing
+  was stored", so undoing a publish made from the built-in board puts the
+  built-in board back rather than some older version. Pressing undo twice
+  returns you to where you started.
+- **Validation.** Links are restricted to `http`, `https`, `sms`, `tel` and
+  `mailto`, so a tile can't be pointed at a `javascript:` URL, and payloads
+  are size-capped with duplicate ids rejected.
+
+Neither stops someone deliberately repointing a tile at a lookalike login
+page. If this ever needs to be genuinely private, put **Cloudflare Access** in
+front of `/admin` and `/api` — that needs no password either, just your email.
 
 **The other way: edit the file.** Everything still lives in
 [`public/js/apps.js`](public/js/apps.js) — one file, one list. Add an entry

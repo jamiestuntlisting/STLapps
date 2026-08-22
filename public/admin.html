@@ -42,30 +42,21 @@
 
   <p class="server-state" id="server-state" hidden></p>
 
-  <!-- Password. Held in this tab only, never written to disk. -->
-  <section class="panel" id="auth-panel">
-    <h2>Admin password</h2>
-    <p class="panel-hint" id="auth-hint">
-      Needed only to publish. It's kept in this tab and forgotten when you close it.
-    </p>
-    <div class="row">
-      <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-    </div>
-  </section>
-
   <div class="board-editor" id="editor"></div>
 
   <div class="admin-foot">
     <button type="button" class="ghost-btn" id="add-section">Add a row</button>
+    <button type="button" class="ghost-btn" id="undo" hidden>Undo last publish</button>
     <button type="button" class="ghost-btn" id="export">Download apps.js</button>
     <button type="button" class="ghost-btn danger" id="revert">Revert to built-in</button>
   </div>
 
   <p class="admin-note">
     <strong>Publish</strong> saves to the server and changes the board for
-    everyone, straight away — no deploy needed. <strong>Download apps.js</strong>
-    writes the same catalog as a source file, to commit into the repo so it
-    becomes the built-in default.
+    everyone, straight away — no deploy needed. Every publish keeps the version
+    it replaced, so <strong>Undo last publish</strong> puts it back in one press.
+    <strong>Download apps.js</strong> writes the same catalog as a source file,
+    to commit into the repo so it becomes the built-in default.
   </p>
 </main>
 
