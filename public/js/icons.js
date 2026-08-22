@@ -217,3 +217,6 @@ export function glyphSvg(name) {
     fill="none" stroke="currentColor" stroke-width="1.7"
     stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
 }
+
+/* Every drawing's name, for the icon picker in the admin page. */
+export const GLYPH_NAMES = Object.keys(GLYPHS).sort();

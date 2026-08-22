@@ -22,12 +22,27 @@ const out = resolve(root, process.argv[2] || 'dist/preview.html');
 const read = (rel) => readFile(resolve(root, 'public', rel), 'utf8');
 
 /* Drop the import lines and the `export` keywords, leaving plain declarations
-   that work once the files sit in one scope. */
+   that work once the files sit in one scope.
+   
+   Aliased imports (`import { A as B }`) need care: stripping the line alone
+   leaves B undefined, and the page then dies at runtime with nothing to say
+   why. Each alias becomes a `const B = A;` instead. */
 function flatten(source) {
-  return source
+  const aliases = [];
+
+  const stripped = source.replace(/^import\s*\{([^}]*)\}\s*from\s+'[^']+';\s*$/gm, (_, names) => {
+    names.split(',').forEach((entry) => {
+      const [original, alias] = entry.split(/\s+as\s+/).map((part) => part.trim());
+      if (alias) aliases.push(`const ${alias} = ${original};`);
+    });
+    return '';
+  })
+    /* Any other import form — default, namespace, side-effect. */
     .replace(/^import[\s\S]*?from\s+'[^']+';\s*$/gm, '')
     .replace(/^export\s+(const|function|class|let)\b/gm, '$1')
     .trim();
+
+  return aliases.length ? `${aliases.join('\n')}\n${stripped}` : stripped;
 }
 
 const [html, css, apps, icons, app] = await Promise.all([

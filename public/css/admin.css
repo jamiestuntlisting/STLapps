@@ -1,0 +1,312 @@
+/*
+ * The admin page. It borrows the board's tokens from styles.css — same ground,
+ * same grain, same monospaced labels — but it's a form, so it's laid out to be
+ * filled in rather than scanned: one row per app, fields stacked on a phone.
+ */
+
+.admin main,
+.admin-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(18px, 4vw, 30px) clamp(14px, 4vw, 28px) 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.rail-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+
+.primary-btn,
+.ghost-btn {
+  font: 500 13.5px/1 var(--sans);
+  padding: 9px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: border-color .18s var(--ease), color .18s var(--ease), background .18s var(--ease);
+}
+
+.ghost-btn { color: var(--muted); }
+.ghost-btn:hover { color: var(--text); border-color: var(--muted); }
+.ghost-btn.danger:hover { color: #e5484d; border-color: #e5484d; }
+
+.primary-btn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #14100e;
+  font-weight: 600;
+}
+
+.primary-btn:hover { filter: brightness(1.08); }
+.primary-btn:disabled { opacity: .6; cursor: default; filter: none; }
+
+.icon-btn {
+  font: 500 13px/1 var(--sans);
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color .15s var(--ease), border-color .15s var(--ease);
+}
+
+.icon-btn:hover { color: var(--text); border-color: var(--muted); }
+.icon-btn.remove:hover { color: #e5484d; border-color: #e5484d; }
+
+/* ── Panels and notices ─────────────────────────────────────────── */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panel h2 {
+  margin: 0;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel-hint,
+.admin-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--faint);
+}
+
+.admin-note strong { color: var(--muted); font-weight: 600; }
+
+.server-state {
+  margin: 0;
+  padding: 13px 15px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.server-state.warn {
+  background: color-mix(in srgb, #f2a33c 12%, transparent);
+  border: 1px solid color-mix(in srgb, #f2a33c 34%, transparent);
+  color: #f0d3a6;
+}
+
+.server-state code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, .35);
+}
+
+/* ── Fields ─────────────────────────────────────────────────────── */
+
+.admin input[type="text"],
+.admin input[type="password"],
+.admin select {
+  font: 400 14px/1 var(--sans);
+  color: var(--text);
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  min-width: 0;
+  outline: none;
+  transition: border-color .16s var(--ease);
+}
+
+.admin input:focus,
+.admin select:focus { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); }
+.admin input::placeholder { color: var(--faint); }
+
+.admin select {
+  cursor: pointer;
+  /* Room for the native arrow, which we keep — a custom one buys nothing. */
+  padding-right: 26px;
+}
+
+.row { display: flex; gap: 8px; }
+.row input { flex: 1; }
+
+/* ── A row of the board ─────────────────────────────────────────── */
+
+.board-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-row {
+  --tint: var(--muted);
+  border: 1px solid color-mix(in srgb, var(--tint) 26%, var(--line));
+  border-radius: var(--radius);
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.edit-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--tint) 10%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--tint) 20%, var(--line));
+  flex-wrap: wrap;
+}
+
+.f-section-name {
+  flex: 1 1 140px;
+  font-weight: 600 !important;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-family: var(--mono) !important;
+  font-size: 12.5px !important;
+  color: color-mix(in srgb, var(--tint) 70%, var(--text)) !important;
+}
+
+.f-tint { flex: none; text-transform: capitalize; }
+
+.row-count {
+  font: 500 11px/1 var(--mono);
+  letter-spacing: .08em;
+  color: var(--faint);
+  flex: none;
+}
+
+/* Four to a row is the layout rule the board depends on; this is the warning
+   when an edit breaks it. It isn't enforced — sometimes you mean it. */
+.row-count.over { color: #f2a33c; }
+
+.row-head-controls { display: flex; gap: 6px; flex: none; margin-left: auto; }
+
+/* ── An app ─────────────────────────────────────────────────────── */
+
+.app-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-row {
+  display: flex;
+  gap: 12px;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.app-row:last-child { border-bottom: 0; }
+
+.row-icon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--tint);
+  background: color-mix(in srgb, var(--tint) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tint) 32%, transparent);
+}
+
+.row-icon .glyph { width: 24px; height: 24px; filter: none; }
+
+.row-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.row-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.row-controls .spacer { flex: 1; }
+.row-controls select { font-size: 12.5px; padding: 7px 24px 7px 8px; }
+
+/* The Settings tile opens a view rather than a link, so its URL isn't a URL.
+   Dim it to say "this one is different" without disabling the row. */
+.app-row.is-special .f-url { opacity: .55; }
+
+.add-app {
+  margin: 12px;
+  width: calc(100% - 24px);
+  justify-content: center;
+}
+
+/* ── Foot ───────────────────────────────────────────────────────── */
+
+.admin-foot {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Toast ──────────────────────────────────────────────────────── */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 20;
+  max-width: min(520px, calc(100vw - 28px));
+  padding: 12px 16px;
+  border-radius: 11px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--text);
+  background: #1b1f27;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 34px -12px rgba(0, 0, 0, .9);
+  animation: toast-in .22s var(--ease);
+}
+
+.toast.error {
+  background: #2a1618;
+  border-color: color-mix(in srgb, #e5484d 45%, transparent);
+  color: #f4c9cb;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ── Narrow screens ─────────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .rail-actions { width: 100%; }
+  .rail-actions .primary-btn { margin-left: auto; }
+  .app-row { gap: 10px; padding: 12px 10px; }
+  .row-icon { width: 40px; height: 40px; }
+  .row-controls select { flex: 1 1 100%; }
+}

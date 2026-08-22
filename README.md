@@ -45,9 +45,28 @@ own, which is what keeps Etc to one row.
 
 ## Changing what's on it
 
-Everything lives in [`public/js/apps.js`](public/js/apps.js) — one file, one
-list. Add an entry and a tile appears; the grid, the search and the settings
-toggles all rebuild from it.
+**The easy way: `/admin`.** It isn't linked from the board and it's marked
+`noindex`, so you have to know it's there. It lists every row and every app
+with its name, link, description and icon, and lets you reorder within a row,
+move an app to another row, add and delete. **Publish** writes the catalog to
+KV and the board changes for everyone straight away — no redeploy.
+
+Publishing needs a password, set once:
+
+```bash
+npx wrangler secret put ADMIN_PASSWORD
+```
+
+Until that secret exists, saving is **refused by the server**, not merely
+hidden in the UI — an unauthenticated write endpoint would let anyone repoint
+every tile on the board. The admin page says so and falls back to
+**Download apps.js**, which writes the same catalog as a source file to commit.
+
+**The other way: edit the file.** Everything still lives in
+[`public/js/apps.js`](public/js/apps.js) — one file, one list. Add an entry
+and a tile appears; the grid, the search and the settings toggles all rebuild
+from it. This is the built-in default the board falls back to whenever nothing
+is stored in KV.
 
 ```js
 {
@@ -176,14 +195,24 @@ For a custom domain, add it under the Worker's Settings → Domains & Routes —
 
 ## How it's built
 
-No framework, no dependencies, no build. Four files:
+No framework and no build step. The board is static; the only server-side code
+is one endpoint holding the catalog.
 
 | File | What it does |
 | --- | --- |
-| `public/js/apps.js` | The catalog — every app, its URL, colour and glyph |
+| `public/js/apps.js` | The built-in catalog — every app, its URL and glyph |
 | `public/js/icons.js` | The icon drawings |
 | `public/js/app.js` | Builds the grid, runs search and settings |
-| `public/css/styles.css` | The whole look |
+| `public/js/admin.js` | The editor behind `/admin` |
+| `public/css/styles.css` | The board's look |
+| `public/css/admin.css` | The editor's look |
+| `src/worker.js` | Serves the assets, and `/api/catalog` |
+
+**Where the catalog comes from at runtime:** the board asks `/api/catalog`
+first and uses that if it exists; a 404 means nothing has been published and
+the built-in `apps.js` stands. Any failure at all — offline, no Worker, opened
+as a plain file — lands on the same fallback, which is why the standalone
+preview still works.
 
 Notes for whoever edits this next:
 

@@ -1,13 +1,31 @@
 /*
- * Cloudflare Workers config — static-assets-only Worker (no server code).
- * Deploy with:  npx wrangler deploy
- * Local dev:    npx wrangler dev
+ * Cloudflare Workers config.
+ *
+ * Deploy with:  npx wrangler deploy   (or just push to main — see
+ * .github/workflows/deploy.yml)
+ *
+ * The Worker is nearly all static assets. src/worker.js exists only to serve
+ * the app catalog that /admin edits, out of the KV namespace below. Before
+ * the admin page can save anything, set the password once:
+ *
+ *   npx wrangler secret put ADMIN_PASSWORD
  */
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "stlapps",
-  "compatibility_date": "2026-08-12",
+  "main": "src/worker.js",
+  // 2026-08-11, not later: it is the newest date the workerd bundled with
+  // wrangler 4.120 can run, and a later one breaks `npm run dev` locally even
+  // though the edge accepts it. Bump both together.
+  "compatibility_date": "2026-08-11",
   "assets": {
-    "directory": "./public"
-  }
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "CATALOG",
+      "id": "350457eaca8947b58cd99b68c97c0930"
+    }
+  ]
 }

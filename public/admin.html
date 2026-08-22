@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0b0d">
+
+<!-- Not for search engines, and not linked from the board. -->
+<meta name="robots" content="noindex, nofollow">
+
+<title>Edit the board · StuntListing Apps</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff5a36'/%3E%3Ctext x='16' y='21.3' text-anchor='middle' fill='%230a0b0d' font-family='Helvetica,Arial,sans-serif' font-size='12.6' font-weight='700'%3ESTL%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+
+<header class="topbar">
+  <div class="rail">
+    <a class="brand" href="./" aria-label="Back to the board">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#ff5a36"/>
+        <text x="16" y="21.3" text-anchor="middle" fill="#0a0b0d"
+              font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+              font-size="12.6" font-weight="700" letter-spacing="-0.4">STL</text>
+      </svg>
+      <span class="brand-text">
+        <b>StuntListing</b>
+        <span>Edit</span>
+      </span>
+    </a>
+
+    <div class="rail-actions">
+      <a class="ghost-btn" href="./">View board</a>
+      <button type="button" class="primary-btn" id="publish">Publish</button>
+    </div>
+  </div>
+</header>
+
+<main class="admin-main">
+
+  <p class="server-state" id="server-state" hidden></p>
+
+  <!-- Password. Held in this tab only, never written to disk. -->
+  <section class="panel" id="auth-panel">
+    <h2>Admin password</h2>
+    <p class="panel-hint" id="auth-hint">
+      Needed only to publish. It's kept in this tab and forgotten when you close it.
+    </p>
+    <div class="row">
+      <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    </div>
+  </section>
+
+  <div class="board-editor" id="editor"></div>
+
+  <div class="admin-foot">
+    <button type="button" class="ghost-btn" id="add-section">Add a row</button>
+    <button type="button" class="ghost-btn" id="export">Download apps.js</button>
+    <button type="button" class="ghost-btn danger" id="revert">Revert to built-in</button>
+  </div>
+
+  <p class="admin-note">
+    <strong>Publish</strong> saves to the server and changes the board for
+    everyone, straight away — no deploy needed. <strong>Download apps.js</strong>
+    writes the same catalog as a source file, to commit into the repo so it
+    becomes the built-in default.
+  </p>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<template id="app-row-template">
+  <li class="app-row">
+    <span class="row-icon"></span>
+    <div class="row-fields">
+      <input class="f-name" type="text" placeholder="Name" aria-label="Name">
+      <input class="f-url" type="text" placeholder="https://…" aria-label="Link" spellcheck="false">
+      <input class="f-blurb" type="text" placeholder="One line describing it (used by search)" aria-label="Description">
+      <div class="row-controls">
+        <select class="f-glyph" aria-label="Icon"></select>
+        <select class="f-move" aria-label="Move to row"></select>
+        <span class="spacer"></span>
+        <button type="button" class="icon-btn up" aria-label="Move up" title="Move up">↑</button>
+        <button type="button" class="icon-btn down" aria-label="Move down" title="Move down">↓</button>
+        <button type="button" class="icon-btn remove" aria-label="Remove" title="Remove">✕</button>
+      </div>
+    </div>
+  </li>
+</template>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

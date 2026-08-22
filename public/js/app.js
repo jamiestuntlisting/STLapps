@@ -6,10 +6,31 @@
  * next time on that device. Nothing is sent anywhere — there is no server.
  */
 
-import { SECTIONS, ALL_APPS, TINTS } from './apps.js';
+import { SECTIONS, TINTS } from './apps.js';
 import { glyphSvg } from './icons.js';
 
 const $ = (sel) => document.querySelector(sel);
+
+/* The board it actually draws. Starts as the catalog compiled into apps.js and
+   is replaced at load by whatever /admin has saved, if anything. Kept in a
+   variable rather than imported directly so an edit doesn't need a redeploy. */
+let sections = SECTIONS;
+const allApps = () => sections.flatMap((s) => s.apps);
+
+/* Fetches the stored catalog. A 404 is the normal, expected answer — it means
+   nothing has been saved yet. Any failure at all leaves the built-in catalog
+   in place, so the board still works with no network, no Worker, or when it's
+   opened as a plain file. */
+async function loadCatalog() {
+  try {
+    const response = await fetch('api/catalog', { headers: { accept: 'application/json' } });
+    if (!response.ok) return;
+    const data = await response.json();
+    if (Array.isArray(data?.sections) && data.sections.length) sections = data.sections;
+  } catch {
+    /* Offline, or no Worker behind this page. The built-in catalog stands. */
+  }
+}
 
 const STORE_KEY = 'stlapps.prefs.v1';
 
@@ -85,7 +106,7 @@ function renderBoard() {
   board.classList.toggle('is-entering', firstPaint);
   firstPaint = false;
 
-  SECTIONS.forEach((section, index) => {
+  sections.forEach((section, index) => {
     const visible = section.apps.filter((app) => !prefs.hidden.includes(app.id));
     if (!visible.length) return;
 
@@ -181,7 +202,7 @@ function renderToggles() {
   const list = $('#toggles');
   list.innerHTML = '';
 
-  ALL_APPS.filter((app) => !app.action).forEach((app) => {
+  allApps().filter((app) => !app.action).forEach((app) => {
     const li = document.createElement('li');
     const label = document.createElement('label');
     label.className = 'toggle';
@@ -223,6 +244,11 @@ function wireSettings() {
 
 /* ── Go ─────────────────────────────────────────────────────────── */
 
-renderBoard();
-wireSearch();
-wireSettings();
+async function start() {
+  await loadCatalog();
+  renderBoard();
+  wireSearch();
+  wireSettings();
+}
+
+start();
