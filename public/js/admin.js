@@ -9,6 +9,11 @@
  * There is no password: this page simply isn't linked from the board and is
  * marked noindex. Anyone with the URL can publish, which is why every publish
  * keeps the version it replaced — see the Undo button.
+ *
+ * Descriptions aren't editable here. They're still carried on every app —
+ * search matches on them and screen readers read them out — they just aren't
+ * worth a row of screen space when the point of this page is to scan 23 links
+ * at once.
  */
 
 import { SECTIONS as BUILT_IN, TINTS } from './apps.js';
@@ -122,10 +127,13 @@ function render() {
     add.className = 'ghost-btn add-app';
     add.textContent = 'Add an app';
     add.addEventListener('click', () => {
+      /* blurb is not edited here any more, but it still feeds search and
+         screen readers, so existing ones are left alone and new apps start
+         with their name as a sensible stand-in. */
       section.apps.push({
         id: uniqueId('new-app'),
         name: 'New app',
-        blurb: '',
+        blurb: 'New app',
         url: 'https://',
         glyph: GLYPH_NAMES[0],
       });
@@ -150,10 +158,6 @@ function appRow(app, sIndex, aIndex) {
   const url = node.querySelector('.f-url');
   url.value = app.url;
   url.addEventListener('input', () => { app.url = url.value.trim(); });
-
-  const blurb = node.querySelector('.f-blurb');
-  blurb.value = app.blurb || '';
-  blurb.addEventListener('input', () => { app.blurb = blurb.value; });
 
   const glyph = node.querySelector('.f-glyph');
   GLYPH_NAMES.forEach((key) => {

@@ -1,7 +1,9 @@
 /*
  * The admin page. It borrows the board's tokens from styles.css — same ground,
- * same grain, same monospaced labels — but it's a form, so it's laid out to be
- * filled in rather than scanned: one row per app, fields stacked on a phone.
+ * same grain, same monospaced labels — but it's a table: one line per app, so
+ * two dozen links can be checked in one screen rather than scrolled through.
+ * On a phone each line folds to three, which is still far shorter than a
+ * stack of labelled fields.
  */
 
 .admin main,
@@ -203,7 +205,7 @@
 
 .row-head-controls { display: flex; gap: 6px; flex: none; margin-left: auto; }
 
-/* ── An app ─────────────────────────────────────────────────────── */
+/* ── An app: one line, laid out as a table ──────────────────────── */
 
 .app-rows {
   list-style: none;
@@ -211,55 +213,78 @@
   padding: 0;
 }
 
+/* Every field is a direct grid child, so the same markup reads as a table row
+   on a wide screen and folds to three short lines on a phone. */
 .app-row {
-  display: flex;
-  gap: 12px;
-  padding: 14px 12px;
+  display: grid;
+  grid-template-columns:
+    34px minmax(96px, 1fr) minmax(150px, 1.7fr) 104px 118px 28px 28px 28px;
+  grid-template-areas: "icon name url glyph move up down rm";
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
   border-bottom: 1px solid var(--line-soft);
 }
 
 .app-row:last-child { border-bottom: 0; }
 
+.row-icon  { grid-area: icon; }
+.f-name    { grid-area: name; }
+.f-url     { grid-area: url; }
+.f-glyph   { grid-area: glyph; }
+.f-move    { grid-area: move; }
+.app-row .up     { grid-area: up; }
+.app-row .down   { grid-area: down; }
+.app-row .remove { grid-area: rm; }
+
 .row-icon {
-  flex: none;
-  width: 46px;
-  height: 46px;
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 9px;
   color: var(--tint);
   background: color-mix(in srgb, var(--tint) 15%, transparent);
   border: 1px solid color-mix(in srgb, var(--tint) 32%, transparent);
 }
 
-.row-icon .glyph { width: 24px; height: 24px; filter: none; }
+.row-icon .glyph { width: 19px; height: 19px; filter: none; }
 
-.row-fields {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+/* Tighter than the page default — this is a dense table, not a form. */
+.app-row input,
+.app-row select {
+  font-size: 13px !important;
+  padding: 6px 8px !important;
+  height: 32px;
 }
 
-.row-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
+.app-row select { padding-right: 20px !important; }
+.app-row .icon-btn { width: 28px; height: 28px; font-size: 12px; }
 
-.row-controls .spacer { flex: 1; }
-.row-controls select { font-size: 12.5px; padding: 7px 24px 7px 8px; }
-
-/* The Settings tile opens a view rather than a link, so its URL isn't a URL.
-   Dim it to say "this one is different" without disabling the row. */
+/* The Settings tile opens a view rather than a link, so its URL isn't a URL. */
 .app-row.is-special .f-url { opacity: .55; }
 
 .add-app {
-  margin: 12px;
-  width: calc(100% - 24px);
+  margin: 8px 10px 10px;
+  width: calc(100% - 20px);
   justify-content: center;
+  padding: 7px 12px;
+  font-size: 12.5px;
+}
+
+/* Folded to three short lines. Every area has to stay a rectangle or the
+   browser throws the whole template away and the row falls back to auto
+   placement — which is how this went wrong the first time. */
+@media (max-width: 720px) {
+  .app-row {
+    grid-template-columns: 34px 1fr 28px 28px 28px;
+    grid-template-areas:
+      "icon name  up    down  rm"
+      "icon url   url   url   url"
+      "icon glyph glyph move  move";
+    row-gap: 5px;
+    align-items: center;
+  }
 }
 
 /* ── Foot ───────────────────────────────────────────────────────── */

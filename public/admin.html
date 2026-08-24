@@ -62,22 +62,19 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+<!-- One app to a line. Every field is a direct child so the row can be laid
+     out as a table on a wide screen and folded to three lines on a phone,
+     without changing the markup. -->
 <template id="app-row-template">
   <li class="app-row">
     <span class="row-icon"></span>
-    <div class="row-fields">
-      <input class="f-name" type="text" placeholder="Name" aria-label="Name">
-      <input class="f-url" type="text" placeholder="https://…" aria-label="Link" spellcheck="false">
-      <input class="f-blurb" type="text" placeholder="One line describing it (used by search)" aria-label="Description">
-      <div class="row-controls">
-        <select class="f-glyph" aria-label="Icon"></select>
-        <select class="f-move" aria-label="Move to row"></select>
-        <span class="spacer"></span>
-        <button type="button" class="icon-btn up" aria-label="Move up" title="Move up">↑</button>
-        <button type="button" class="icon-btn down" aria-label="Move down" title="Move down">↓</button>
-        <button type="button" class="icon-btn remove" aria-label="Remove" title="Remove">✕</button>
-      </div>
-    </div>
+    <input class="f-name" type="text" placeholder="Name" aria-label="Name">
+    <input class="f-url" type="text" placeholder="https://…" aria-label="Link" spellcheck="false">
+    <select class="f-glyph" aria-label="Icon"></select>
+    <select class="f-move" aria-label="Move to row"></select>
+    <button type="button" class="icon-btn up" aria-label="Move up" title="Move up">↑</button>
+    <button type="button" class="icon-btn down" aria-label="Move down" title="Move down">↓</button>
+    <button type="button" class="icon-btn remove" aria-label="Remove" title="Remove">✕</button>
   </li>
 </template>
 

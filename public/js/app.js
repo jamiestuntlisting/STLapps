@@ -2,8 +2,11 @@
  * Builds the board from the catalog, filters it as you type, and runs the
  * settings view.
  *
- * Preferences live in localStorage under one key, so the board looks the same
- * next time on that device. Nothing is sent anywhere — there is no server.
+ * The catalog comes from /api/catalog when something has been published from
+ * /admin, and from the built-in apps.js otherwise — see loadCatalog.
+ *
+ * Which apps you've hidden is separate, and per-device: that lives in
+ * localStorage and is never sent anywhere.
  */
 
 import { SECTIONS, TINTS } from './apps.js';
@@ -81,6 +84,16 @@ function tileFor(app, tint) {
     el.addEventListener('click', () => showSettings());
   } else {
     el.href = app.url;
+
+    /* Apps open in a new tab so the board stays put behind them.
+       Only http(s): sms:, tel: and mailto: are handed straight to the phone,
+       and a new tab for those would just be left behind, blank.
+       `noopener` is not optional — without it the page we open can reach back
+       through window.opener and navigate this one. */
+    if (/^https?:/i.test(app.url)) {
+      el.target = '_blank';
+      el.rel = 'noopener noreferrer';
+    }
   }
 
   /* The blurb is carried but not printed: it's what search matches on, what a

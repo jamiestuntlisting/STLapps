@@ -47,8 +47,11 @@ own, which is what keeps Etc to one row.
 
 **The easy way: `/admin`.** It isn't linked from the board and is marked
 `noindex` — by meta tag and by response header — so you have to know the URL.
-It lists every row and every app with its name, link, description and icon,
-and lets you reorder within a row, move an app to another row, add and delete.
+It's a table — one line per app with its name, link and icon — so two dozen
+links can be checked in a screen rather than scrolled through. Reorder within
+a row, move an app to another row, add and delete. Descriptions aren't edited
+here; they're still carried on every app for search and screen readers, they
+just aren't worth a line each.
 **Publish** writes the catalog to KV and the board changes for everyone
 straight away — no redeploy.
 
@@ -233,7 +236,11 @@ Notes for whoever edits this next:
 - **Blurbs are carried but not printed.** Each tile holds its one-line
   description in a visually-hidden span, which is what search matches on and
   what a screen reader reads out. Drop it and searching "overtime" stops
-  finding the Rate Calculator.
+  finding the Rate Calculator. `/admin` doesn't show the field, but it
+  preserves what's there.
+- **Apps open in a new tab**, so the board stays behind them — but only
+  `http(s)` links. `sms:` is handed straight to the phone, and a new tab for
+  it would just be left behind, blank.
 - **The grid's 78px minimum column is deliberate** — it's the widest column
   that still fits four across a small phone, which is what makes the
   four-per-section rule land as exactly one row.
