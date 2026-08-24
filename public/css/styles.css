@@ -108,7 +108,7 @@ body {
 }
 
 .rail {
-  max-width: 1180px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 14px clamp(16px, 4vw, 32px);
   display: flex;
@@ -195,7 +195,7 @@ body {
 /* ── Board ──────────────────────────────────────────────────────── */
 
 main {
-  max-width: 1180px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px) 64px;
 }
@@ -242,17 +242,17 @@ main {
     transparent 88%);
 }
 
-/* 78px is chosen, not arbitrary: it's the widest column that still fits four
-   across a small phone. Most sections here hold four apps, so a wider column
-   would strand the fourth on a row of its own. */
+/* Always four across, at every width.
+   It used to auto-fill by a minimum column width, which on a wide screen made
+   nine narrow columns and left a row of four huddled against the left edge
+   with half the page empty. Four fixed columns spread the row over the whole
+   board instead, and the columns line up down the page from one section to
+   the next. A section with more than four wraps onto a second line of four. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px 10px;
-}
-
-@media (min-width: 700px) {
-  .grid { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
+  justify-items: center;
 }
 
 /* Rows fade up in sequence on first paint — a quarter-second of order, then
@@ -291,8 +291,8 @@ main {
 
 .tile-icon {
   position: relative;
-  width: 62px;
-  height: 62px;
+  width: var(--icon, 62px);
+  height: var(--icon, 62px);
   display: grid;
   place-items: center;
   /* 26% — a softer, squarer corner than the phone's superellipse. */
@@ -339,14 +339,14 @@ main {
 /* A whisper of the tint bleeding off the drawing, so the glyph sits in the
    plate's light rather than on top of it. */
 .glyph {
-  width: 30px;
-  height: 30px;
+  width: var(--glyph, 30px);
+  height: var(--glyph, 30px);
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tint) 35%, transparent));
 }
 
 .tile-name {
   max-width: 100%;
-  font-size: 12.5px;
+  font-size: var(--label-size, 12.5px);
   line-height: 1.3;
   font-weight: 480;
   text-align: center;
@@ -514,6 +514,20 @@ main {
 .saved[data-on="true"] { opacity: 1; }
 
 /* ── Narrow screens ─────────────────────────────────────────────── */
+
+/* More room, bigger targets. The icon, its drawing and its caption all scale
+   together off these three so the proportions hold. */
+@media (min-width: 700px) {
+  :root { --icon: 78px; --glyph: 36px; --label-size: 13.5px; }
+  .grid { gap: 30px 16px; }
+}
+
+@media (min-width: 1000px) {
+  :root { --icon: 96px; --glyph: 44px; --label-size: 15px; }
+  .grid { gap: 36px 20px; }
+  .tile { gap: 12px; }
+  .tile-icon { border-radius: 22px; }
+}
 
 @media (max-width: 560px) {
   .rail { flex-wrap: wrap; gap: 12px; }

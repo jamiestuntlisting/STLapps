@@ -241,9 +241,12 @@ Notes for whoever edits this next:
 - **Apps open in a new tab**, so the board stays behind them — but only
   `http(s)` links. `sms:` is handed straight to the phone, and a new tab for
   it would just be left behind, blank.
-- **The grid's 78px minimum column is deliberate** — it's the widest column
-  that still fits four across a small phone, which is what makes the
-  four-per-section rule land as exactly one row.
+- **The grid is four fixed columns at every width**, not an auto-fill by
+  minimum column size. Auto-fill made nine narrow columns on a desktop and
+  left each row of four huddled at the left edge with half the page empty.
+  Four columns spread a row across the whole board and keep the columns
+  aligned from one section to the next; the tile scales with the room it gets
+  (`--icon` / `--glyph` / `--label-size`, 62px → 96px).
 - **Settings only hides apps.** It used to also take a StuntListing username
   to build the Profile link; that's an account setting that belongs on
   StuntListing itself, so it's gone. Preferences are per-device, in
