@@ -98,62 +98,54 @@ can't be mistaken for another icon at 30px — that's why Search is a magnifier
 with a person in the lens while Advanced Search has the filter sliders, and
 the two falling games are drawn from different angles.
 
-## Links worth confirming
+## Links
 
-Most links have now been opened and confirmed working (200 OK, correct page)
-by fetching them through Vercel's own network, which reaches what this
-session's egress proxy blocks. What could **not** be reached from here at all:
-`*.workers.dev`, `stuntlisting.com`, `atlasaction.com` and the Shopify store.
+Every link below was given by Jamie, or opened and confirmed. Only one tile
+still points at nothing.
 
-Confirmed live, with the page title each one actually serves:
+| Section | App | Link |
+| --- | --- | --- |
+| Perform | Profile | `stuntlisting.com/edit_profile` |
+| Perform | Dashboard | `stuntlisting.com/performer_dashboard` |
+| Perform | Membership | `stuntlisting.com/membership_plans` |
+| Coordinate | Search | `stuntlisting.com/coordinator_dashboard` |
+| Coordinate | Advanced Search | `xstunts.vercel.app` |
+| Coordinate | Lists | `stuntlisting.com/my_lists` |
+| Coordinate | Post a Job | `stuntlisting.com/job_creation` |
+| Getting Hired | The Stunt Breakdown | `thestuntbreakdown.com` |
+| Getting Hired | Stunt Jobs | `stuntlisting.com/job_postings` |
+| Getting Hired | Hair Selfie | `hairselfie.jamie-181.workers.dev` |
+| Getting Hired | Quick Headshot | `sms:8312788687` |
+| Set | **Call Time** | **not built — see below** |
+| Set | Rate Calculator | `stuntlisting.com/rate_calculator` |
+| Set | SAG Contract Helper | `stuntlisting-contract-toolkit.vercel.app` |
+| Set | Selfwrap | `selfwrap.vercel.app` |
+| Learn | Action Vault | `action-vault-blond.vercel.app` |
+| Learn | Atlas Action | `atlasaction.com` |
+| Learn | Gym Map | `gymmap-iota.vercel.app` |
+| Learn | Stunt People Flashcards | `stunt-flashcards.jamie-181.workers.dev` |
+| Etc | Store | `stuntlisting.myshopify.com` |
+| Etc | All Games | `stlg-arcade.vercel.app` |
+| Etc | Stunt News | `stunt-news.vercel.app` |
 
-| App | Serves |
-| --- | --- |
-| Rate Calculator | StuntListing Bookkeeper (redirects to `/login`) |
-| SAG Contract Helper | StuntListing Contract Guide |
-| Selfwrap | Exhibit G Time Logger |
-| The Stunt Breakdown | The Stunt Breakdown |
-| Advanced Search | xStunts — Stunt Performer Search |
-| Action Vault | Action Vault |
-| Gym Map | Stunt Training & Specialty Facilities — World Map |
-| Stunt News | Stunt News — Newsletter Generator |
-| All Games | branded "Virtual Stunt School" — see below |
+**Call Time is the only unfinished tile.** No call time alarm exists — nothing
+in any of the repos is one. Its link 404s and it carries the amber dot until
+something is built and the `url` is pointed at it.
+
+**Quick Headshot isn't a web page.** It opens the phone's messages app to the
+headshot line, so it does nothing on a desktop.
+
+Two of these moved and would have quietly broken: the Rate Calculator now
+lives at `stuntlisting.com/rate_calculator` rather than on Vercel, and The
+Stunt Breakdown has its own domain rather than `stuntbreakdown3.vercel.app`.
 
 **The All Games tile is branded "Virtual Stunt School".** Its page `<title>`
 and its Expo manifest both say so — the app's slug is `stunt-school-native` —
-but it *is* the game launcher. The page is a JavaScript shell, so the title
-says nothing about what it renders; the bundle carries the games and their
-high scores and contains no lessons or courses. Don't relabel that tile on
-the strength of the title.
-
-The individual games are also live at their own URLs, reached through the
-launcher rather than having tiles:
-
-| Game | Serves |
-| --- | --- |
-| `pro-high-faller` | StuntListing's Pro Stunt High Faller |
-| `pro-stair-faller` | Pro Stair Faller |
-| `pro-fire-burner` | Fire Burn Simulator |
-| `coordinator-please` | Coordinator Please |
-
-Still unverified, and flagged in the app with an amber dot:
-
-| App | URL | Why |
-| --- | --- | --- |
-| **Membership** | `stuntlisting.com/membership` | Guessed. No page by that name turned up. |
-| **Post a Job** | `stuntlisting.com/post-a-job` | Guessed. Posting may live inside `/job_postings`. |
-| **Call Time** | `stuntlisting.com/call-time` | A call time alarm doesn't exist yet — nothing in any repo is one. Placeholder. |
-| **Quick Headshot** | `sms:+18312788687` | Not a web app — opens a text message. Swap the `url` when a page exists. |
-| **Rate Calculator** | `rate-calculator-v3.vercel.app` | It loads, but the repo is mid-migration to Cloudflare Workers and its last three Vercel deploys failed. Working today; confirm where it should live. |
-
-Confirmed by search rather than by fetching: `/edit_profile` is the real
-profile page and `/job_postings` the real job board, so those two tiles are no
-longer guesses.
-
-A few others aren't the obvious guess and are worth a glance: Action Vault is
-`action-vault-blond`, Gym Map is `gymmap-iota`, The Stunt Breakdown points at
-`stuntbreakdown3`, and Hair Selfie is `hairselfie.jamie-181.workers.dev`
-(worker name confirmed, subdomain inferred from Stunt Flashcards).
+but it *is* the game launcher: the bundle carries the games and their high
+scores and contains no lessons or courses. Don't relabel that tile on the
+strength of the title. The individual games (`pro-high-faller`,
+`pro-stair-faller`, `pro-fire-burner`, `coordinator-please`) are all live and
+reached through it rather than having tiles.
 
 ## Running it
 
