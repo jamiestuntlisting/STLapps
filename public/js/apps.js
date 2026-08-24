@@ -189,28 +189,28 @@ export const SECTIONS = [
         id: 'action-vault',
         name: 'Action Vault',
         blurb: 'The training library — reels, videos, podcasts and books.',
-        url: 'https://action-vault-blond.vercel.app',
+        url: 'https://action-vault-blond.vercel.app/Splash',
         glyph: 'vault',
       },
       {
         id: 'atlas-action',
         name: 'Atlas Action',
         blurb: 'Essentials for Stunts — the on-demand course.',
-        url: 'https://www.atlasaction.com',
+        url: 'https://atlasaction.com/',
         glyph: 'globe',
       },
       {
         id: 'gymmap',
         name: 'Gym Map',
         blurb: 'World map of stunt training schools and gyms.',
-        url: 'https://gymmap-iota.vercel.app',
+        url: 'https://gymmap.jamie-181.workers.dev/',
         glyph: 'gympin',
       },
       {
         id: 'stunt-flashcards',
         name: 'Stunt People Flashcards',
         blurb: 'Paste a list and learn everyone on it — faces and skills.',
-        url: 'https://stunt-flashcards.jamie-181.workers.dev',
+        url: 'https://stunt-flashcards.jamie-181.workers.dev/',
         glyph: 'flashcards',
       },
     ],
@@ -224,27 +224,25 @@ export const SECTIONS = [
         id: 'store',
         name: 'Store',
         blurb: 'StuntListing merch and the Atlas Action course.',
-        url: 'https://stuntlisting.myshopify.com',
+        url: 'https://stuntlisting.myshopify.com/?utm_source=stuntlisting&utm_medium=nav_link&utm_campaign=store_redirect',
         glyph: 'store',
       },
       {
-        /* Heads up if you go looking: this deployment is branded "Virtual
-           Stunt School" — that's the Expo app name in its manifest, and it's
-           the <title> the page serves. It is nonetheless the game launcher.
-           The bundle carries the games and their high scores and no lessons
-           or courses at all. Don't "correct" this tile on the strength of
-           the page title. */
+        /* Yes, "stunt-school-link" is the arcade. The stunt school and the
+           game launcher are the same app — it's branded "Virtual Stunt
+           School" and it launches the games. The ?id=33 is part of the link
+           as given; don't trim it. */
         id: 'stlg-arcade',
         name: 'All Games',
         blurb: 'The game launcher — every StuntListing game in one place.',
-        url: 'https://stlg-arcade.vercel.app',
+        url: 'https://stunt-school-link.vercel.app/?id=33',
         glyph: 'gamepad',
       },
       {
         id: 'stunt-news',
         name: 'Stunt News',
-        blurb: 'Build the newsletter — compose, preview, export the HTML.',
-        url: 'https://stunt-news.vercel.app',
+        blurb: 'Stunt industry news and features, from StuntListing.',
+        url: 'https://stuntlisting.ghost.io/',
         glyph: 'news',
       },
     ],

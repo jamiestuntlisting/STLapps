@@ -120,13 +120,13 @@ still points at nothing.
 | Set | Rate Calculator | `stuntlisting.com/rate_calculator` |
 | Set | SAG Contract Helper | `stuntlisting-contract-toolkit.vercel.app` |
 | Set | Selfwrap | `selfwrap.vercel.app` |
-| Learn | Action Vault | `action-vault-blond.vercel.app` |
+| Learn | Action Vault | `action-vault-blond.vercel.app/Splash` |
 | Learn | Atlas Action | `atlasaction.com` |
-| Learn | Gym Map | `gymmap-iota.vercel.app` |
+| Learn | Gym Map | `gymmap.jamie-181.workers.dev` |
 | Learn | Stunt People Flashcards | `stunt-flashcards.jamie-181.workers.dev` |
-| Etc | Store | `stuntlisting.myshopify.com` |
-| Etc | All Games | `stlg-arcade.vercel.app` |
-| Etc | Stunt News | `stunt-news.vercel.app` |
+| Etc | Store | `stuntlisting.myshopify.com` (with UTM tags) |
+| Etc | All Games | `stunt-school-link.vercel.app/?id=33` |
+| Etc | Stunt News | `stuntlisting.ghost.io` |
 
 **Call Time is the only unfinished tile.** No call time alarm exists — nothing
 in any of the repos is one. Its link 404s and it carries the amber dot until
@@ -135,17 +135,24 @@ something is built and the `url` is pointed at it.
 **Quick Headshot isn't a web page.** It opens the phone's messages app to the
 headshot line, so it does nothing on a desktop.
 
-Two of these moved and would have quietly broken: the Rate Calculator now
-lives at `stuntlisting.com/rate_calculator` rather than on Vercel, and The
-Stunt Breakdown has its own domain rather than `stuntbreakdown3.vercel.app`.
+**"stunt-school-link" really is the arcade.** The stunt school and the game
+launcher are one app, branded "Virtual Stunt School", and it launches the
+games. That resolves what looked for a while like two different products. The
+individual games (`pro-high-faller`, `pro-stair-faller`, `pro-fire-burner`,
+`coordinator-please`) are all live and reached through it rather than having
+tiles of their own.
 
-**The All Games tile is branded "Virtual Stunt School".** Its page `<title>`
-and its Expo manifest both say so — the app's slug is `stunt-school-native` —
-but it *is* the game launcher: the bundle carries the games and their high
-scores and contains no lessons or courses. Don't relabel that tile on the
-strength of the title. The individual games (`pro-high-faller`,
-`pro-stair-faller`, `pro-fire-burner`, `coordinator-please`) are all live and
-reached through it rather than having tiles.
+**Several of these had moved**, and the old links still worked well enough to
+hide it: the Rate Calculator is on `stuntlisting.com` rather than Vercel, Gym
+Map moved to Cloudflare, The Stunt Breakdown has its own domain, and Stunt
+News now points at the published title on Ghost rather than the tool that
+builds the newsletter. Worth re-checking these whenever something gets
+rehosted — a stale link here fails silently.
+
+**The Store link carries UTM tags** exactly as supplied
+(`utm_source=stuntlisting&utm_medium=nav_link`). If store visits from the
+launcher should be told apart from ones out of the site nav, change
+`utm_source` — otherwise they'll be pooled together.
 
 ## Running it
 
