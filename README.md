@@ -120,7 +120,7 @@ still points at nothing.
 | Getting Hired | Hair Selfie | `hairselfie.jamie-181.workers.dev` |
 | Getting Hired | Quick Headshot | `sms:8312788687` |
 | Set | **Call Time** | **not built — see below** |
-| Set | Rate Calculator | `stuntlisting.com/rate_calculator` |
+| Set | Rate Calculator | `rate-calculator.jamie-181.workers.dev` |
 | Set | SAG Contract Helper | `stuntlisting-contract-toolkit.vercel.app` |
 | Set | Selfwrap | `selfwrap.vercel.app` |
 | Learn | Action Vault | `action-vault-blond.vercel.app/Splash` |
@@ -146,11 +146,12 @@ individual games (`pro-high-faller`, `pro-stair-faller`, `pro-fire-burner`,
 tiles of their own.
 
 **Several of these had moved**, and the old links still worked well enough to
-hide it: the Rate Calculator is on `stuntlisting.com` rather than Vercel, Gym
-Map moved to Cloudflare, The Stunt Breakdown has its own domain, and Stunt
-News now points at the published title on Ghost rather than the tool that
-builds the newsletter. Worth re-checking these whenever something gets
-rehosted — a stale link here fails silently.
+hide it. The Rate Calculator has now moved twice in this project's lifetime —
+Vercel, then `stuntlisting.com`, now its own Cloudflare Worker — and the stale
+Vercel deployment still answered the whole time, which is exactly how this
+kind of link rots unnoticed. Gym Map moved to Cloudflare too, The Stunt
+Breakdown has its own domain, and Stunt News now points at the published title
+on Ghost rather than the tool that builds the newsletter.
 
 **The Store link carries UTM tags** exactly as supplied
 (`utm_source=stuntlisting&utm_medium=nav_link`). If store visits from the

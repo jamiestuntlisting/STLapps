@@ -159,7 +159,7 @@ export const SECTIONS = [
         id: 'rate-calculator',
         name: 'Rate Calculator',
         blurb: 'Work out a day rate — overtime, adjustments, meal penalties.',
-        url: 'https://www.stuntlisting.com/rate_calculator',
+        url: 'https://rate-calculator.jamie-181.workers.dev/',
         glyph: 'calculator',
       },
       {
