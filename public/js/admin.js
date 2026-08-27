@@ -41,6 +41,28 @@ async function loadLive() {
   return 'built-in';
 }
 
+/* Says which of the two catalogs the board is actually serving.
+ *
+ * This is the question that bites: once anything is published, the stored
+ * catalog wins and the built-in apps.js is ignored entirely — so a deploy
+ * that edits apps.js changes nothing on the live board, silently. Without
+ * this line the only symptom is "my edit didn't show up". */
+function showSource(source) {
+  const state = $('#server-state');
+  state.hidden = false;
+
+  if (source === 'stored') {
+    state.className = 'server-state info';
+    state.innerHTML = 'The board is showing a <strong>published</strong> catalog, saved here. '
+      + 'It overrides the built-in one in <code>apps.js</code>, so changes deployed to that file '
+      + "won't appear until you publish again or press <strong>Revert to built-in</strong>.";
+  } else {
+    state.className = 'server-state info';
+    state.innerHTML = 'The board is showing the <strong>built-in</strong> catalog from '
+      + '<code>apps.js</code>. Publishing replaces it for everyone.';
+  }
+}
+
 async function checkServer() {
   const state = $('#server-state');
   try {
@@ -254,6 +276,7 @@ async function publish() {
 
     if (response.ok) {
       if (data.canUndo) $('#undo').hidden = false;
+      showSource('stored');
       toast('Published. The board is updated for everyone.');
     } else {
       toast(data.error || `Publish failed (${response.status}).`, true);
@@ -276,6 +299,7 @@ async function revert() {
       sections = structuredClone(BUILT_IN);
       render();
       if (data.canUndo) $('#undo').hidden = false;
+      showSource('built-in');
       toast('Reverted to the built-in catalog.');
     } else {
       toast(data.error || `Revert failed (${response.status}).`, true);
@@ -292,8 +316,9 @@ async function undoPublish() {
     const response = await fetch('api/undo', { method: 'POST' });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) return toast(data.error || `Undo failed (${response.status}).`, true);
-    await loadLive();
+    const source = await loadLive();
     render();
+    showSource(source);
     toast('Put the previous version back.');
   } catch {
     toast('Could not reach the server.', true);
@@ -373,7 +398,8 @@ function toast(message, isError = false) {
 
 async function start() {
   await checkServer();
-  await loadLive();
+  const source = await loadLive();
+  if (!$('#publish').disabled) showSource(source);
   render();
 
   $('#publish').addEventListener('click', publish);

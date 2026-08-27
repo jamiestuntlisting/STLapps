@@ -55,6 +55,14 @@ just aren't worth a line each.
 **Publish** writes the catalog to KV and the board changes for everyone
 straight away — no redeploy.
 
+### Published beats built-in
+
+Once anything has been published, **the stored catalog wins and `apps.js` is
+ignored entirely.** A deploy that edits `apps.js` then changes nothing on the
+live board, with no error to notice — the only symptom is that an edit doesn't
+show up. `/admin` says which of the two is live at the top of the page, and
+**Revert to built-in** hands control back to the file.
+
 ### Publishing is open, on purpose
 
 There's no password. Anyone who knows the URL can change what every visitor
@@ -103,8 +111,8 @@ the two falling games are drawn from different angles.
 
 ## Links
 
-Every link below was given by Jamie, or opened and confirmed. Only one tile
-still points at nothing.
+Every link below was given by Jamie, or opened and confirmed. Nothing is
+flagged any more — the amber dot is gone from the board.
 
 | Section | App | Link |
 | --- | --- | --- |
@@ -119,7 +127,7 @@ still points at nothing.
 | Getting Hired | Stunt Jobs | `stuntlisting.com/job_postings` |
 | Getting Hired | Hair Selfie | `hairselfie.jamie-181.workers.dev` |
 | Getting Hired | Quick Headshot | `sms:8312788687` |
-| Set | **Call Time** | **not built — see below** |
+| Set | Call Time | `calltimealarmclock.jamie-181.workers.dev` |
 | Set | Rate Calculator | `rate-calculator.jamie-181.workers.dev` |
 | Set | SAG Contract Helper | `stuntlisting-contract-toolkit.vercel.app` |
 | Set | Selfwrap | `selfwrap.vercel.app` |
@@ -130,10 +138,6 @@ still points at nothing.
 | Etc | Store | `stuntlisting.myshopify.com` (with UTM tags) |
 | Etc | All Games | `stunt-school-link.vercel.app/?id=33` |
 | Etc | Stunt News | `stuntlisting.ghost.io` |
-
-**Call Time is the only unfinished tile.** No call time alarm exists — nothing
-in any of the repos is one. Its link 404s and it carries the amber dot until
-something is built and the `url` is pointed at it.
 
 **Quick Headshot isn't a web page.** It opens the phone's messages app to the
 headshot line, so it does nothing on a desktop.

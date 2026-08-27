@@ -148,12 +148,9 @@ export const SECTIONS = [
       {
         id: 'call-time',
         name: 'Call Time',
-        /* Nothing in the repos is a call time alarm yet, so this is a
-           placeholder tile. Point it at the real thing once it exists. */
         blurb: 'Set an alarm for tomorrow\'s call.',
-        url: 'https://www.stuntlisting.com/call-time',
+        url: 'https://calltimealarmclock.jamie-181.workers.dev/',
         glyph: 'alarm',
-        note: 'Not built yet. This link 404s until the alarm exists — the tile is a placeholder.',
       },
       {
         id: 'rate-calculator',
